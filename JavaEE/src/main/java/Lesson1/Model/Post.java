@@ -36,6 +36,7 @@ public class Post extends IdEntity {
     public void setTitle(String title) {
         this.title = title;
     }
+
     @Column(name = "BODY")
     public String getBody() {
         return body;
@@ -44,6 +45,7 @@ public class Post extends IdEntity {
     public void setBody(String body) {
         this.body = body;
     }
+
     @Column(name = "PUBLISH_DATE")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "YYYY-MM-DD HH:mm:ss")
     public Date getPublishDate() {
@@ -55,7 +57,7 @@ public class Post extends IdEntity {
     }
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "USER1_ID")
+    @JoinColumn(name = "USER_ID")
     @JsonBackReference
     public User getUser() {
         return user;
@@ -64,6 +66,7 @@ public class Post extends IdEntity {
     public void setUser(User user) {
         this.user = user;
     }
+
     @Column(name = "VIEWS")
     public long getViews() {
         return views;
@@ -71,5 +74,17 @@ public class Post extends IdEntity {
 
     public void setViews(long views) {
         this.views = views;
+    }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", body='" + body + '\'' +
+                ", publishDate=" + publishDate +
+                ", user=" + user +
+                ", views=" + views +
+                '}';
     }
 }

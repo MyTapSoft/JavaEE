@@ -84,4 +84,17 @@ public class User extends IdEntity {
     public void setPosts(List<Post> posts) {
         this.posts = posts;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", userName='" + userName + '\'' +
+                ", realName='" + realName + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber=" + phoneNumber +
+                ", birthDate=" + birthDate +
+                ", posts=" + posts.size() +
+                '}';
+    }
 }
