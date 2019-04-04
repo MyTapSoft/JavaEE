@@ -41,7 +41,13 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/user/{userId}")
     public String getUser(Model model, @PathVariable String userId) throws Exception {
-        model.addAttribute("user", userService.getUser(Integer.valueOf(userId)));
+        try {
+            model.addAttribute("user", userService.getUser(Integer.valueOf(userId)));
+        } catch (NumberFormatException error){
+            model.addAttribute("error", error);
+            System.out.println(error);
+            return "500";
+        }
         return "user";
     }
 
