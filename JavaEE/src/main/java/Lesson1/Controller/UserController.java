@@ -43,9 +43,11 @@ public class UserController {
     public String getUser(Model model, @PathVariable String userId) throws Exception {
         try {
             model.addAttribute("user", userService.getUser(Integer.valueOf(userId)));
-        } catch (NumberFormatException error){
-            model.addAttribute("error", error);
-            System.out.println(error);
+        } catch (NumberFormatException numberExcep){
+            model.addAttribute("error", numberExcep);
+            return "500";
+        } catch (Exception e){
+            model.addAttribute("error", e);
             return "500";
         }
         return "user";
