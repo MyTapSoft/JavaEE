@@ -10,9 +10,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 @Controller
 public class UserController {
@@ -27,26 +27,43 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/saveUser")
-    public String createUser(HttpServletRequest req) throws Exception {
-        userService.saveUser(jsonParser.jsonToObject(req, User.class));
-        return "ADS_CREATE";
+    public String createUser(HttpServletRequest req, Model model) {
+        try {
+            userService.saveUser(jsonParser.jsonToObject(req, User.class));
+        } catch (IOException ioExcep) {
+            model.addAttribute("error", ioExcep);
+            return "404";
+        } catch (Exception e) {
+            model.addAttribute("error", e);
+            return "500";
+        }
+
+        return "home";
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/updateUser")
-    public String updateUser(HttpServletRequest req) throws Exception {
-        userService.updateUser(jsonParser.jsonToObject(req, User.class));
-        userService.saveUser(jsonParser.jsonToObject(req, User.class));
-        return "ADS_UPDATE";
+    public String updateUser(HttpServletRequest req, Model model) throws Exception {
+        try {
+            userService.updateUser(jsonParser.jsonToObject(req, User.class));
+        } catch (IOException ioExcep) {
+            model.addAttribute("error", ioExcep);
+            return "404";
+        } catch (Exception e) {
+            model.addAttribute("error", e);
+            return "500";
+        }
+
+        return "home";
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/user/{userId}")
-    public String getUser(Model model, @PathVariable String userId) throws Exception {
+    public String getUser(Model model, @PathVariable String userId) {
         try {
-            model.addAttribute("user", userService.getUser(Integer.valueOf(userId)));
-        } catch (NumberFormatException numberExcep){
+            model.addAttribute("user", userService.getUser(Long.valueOf(userId)));
+        } catch (NumberFormatException numberExcep) {
             model.addAttribute("error", numberExcep);
-            return "500";
-        } catch (Exception e){
+            return "404";
+        } catch (Exception e) {
             model.addAttribute("error", e);
             return "500";
         }
@@ -54,10 +71,17 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/deleteUser")
-    public @ResponseBody
-    String deleteUser(HttpServletRequest req) throws Exception {
-        User user = jsonParser.jsonToObject(req, User.class);
-        userService.deleteUser(user);
-        return "User with id " + user.getId() + " was delete successfully";
+    public String deleteUser(HttpServletRequest req, Model model) throws Exception {
+        try {
+            User user = jsonParser.jsonToObject(req, User.class);
+            userService.deleteUser(user);
+        } catch (IOException ioExcep) {
+            model.addAttribute("error", ioExcep);
+            return "404";
+        } catch (Exception e) {
+            model.addAttribute("error", e);
+            return "500";
+        }
+        return "home";
     }
 }

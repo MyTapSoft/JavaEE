@@ -26,8 +26,11 @@
     <p class="output">The page you are looking for might have been removed, had its name changed or is
         temporarily
         unavailable</p>
-    <p class="output">Please try <a onclick="play()" href="#1">this link</a></p>
-    <p class="output">Good luck</p>
+    <p class="output">Please try again</p>
+    <p class="output">Or read server logs<span id="dots">...</span>
+        <span id="more">
+    <p th:text="${error}"></p> </span></p>
+    <button onclick="myFunction()" id="myBtn">Show Server Logs</button>
 </div>
 
 <script src="../static/js/menu.js"></script>
