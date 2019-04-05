@@ -42,7 +42,7 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/updateUser")
-    public String updateUser(HttpServletRequest req, Model model) throws Exception {
+    public String updateUser(HttpServletRequest req, Model model) {
         try {
             userService.updateUser(jsonParser.jsonToObject(req, User.class));
         } catch (IOException ioExcep) {
@@ -71,7 +71,7 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/deleteUser")
-    public String deleteUser(HttpServletRequest req, Model model) throws Exception {
+    public String deleteUser(HttpServletRequest req, Model model) {
         try {
             User user = jsonParser.jsonToObject(req, User.class);
             userService.deleteUser(user);
