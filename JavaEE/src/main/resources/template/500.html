@@ -26,9 +26,10 @@
     <h1>Error <span class="errorcode">500</span></h1>
     <p class="output">Looks like it's some problem with your request</p>
     <p class="output">Please try again</p>
-    <p class="output">Or read server logs<span id="dots">...</span>
-        <span id="more">
-    <p th:text="${error}"></p> </span></p>
+    <p class="output">Or read server logs<span id="dots">...</span></p>
+    <div class="showMore">
+        <span id="more"><p th:text="${error}"></p></span>
+    </div>
     <button onclick="myFunction()" id="myBtn">Show Server Logs</button>
 </div>
 

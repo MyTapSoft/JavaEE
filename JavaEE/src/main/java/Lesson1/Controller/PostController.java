@@ -5,12 +5,11 @@ import Lesson1.Model.Post;
 import Lesson1.Service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 @Controller
 public class PostController {
@@ -25,30 +24,69 @@ public class PostController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/savePost")
-    public @ResponseBody
-    String savePost(HttpServletRequest req) throws Exception {
-        return postService.savePost(jsonParser.jsonToObject(req, Post.class)).toString();
+    public String savePost(HttpServletRequest req, Model model) {
+        try {
+            model.addAttribute("post", postService.savePost(jsonParser.jsonToObject(req, Post.class)));
+        } catch (
+                IOException ioExcep) {
+            model.addAttribute("error", ioExcep);
+            return "404";
+        } catch (Exception e) {
+            model.addAttribute("error", e);
+            return "500";
+        }
+
+        return "home";
 
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/updatePost")
-    public @ResponseBody
-    String updatePost(HttpServletRequest req) throws Exception {
-        return postService.updatePost(jsonParser.jsonToObject(req, Post.class)).toString();
+    public String updatePost(HttpServletRequest req, Model model) {
+        try {
+            model.addAttribute("post", postService.updatePost(jsonParser.jsonToObject(req, Post.class)));
+        } catch (
+                IOException ioExcep) {
+            model.addAttribute("error", ioExcep);
+            return "404";
+        } catch (Exception e) {
+            model.addAttribute("error", e);
+            return "500";
+        }
+
+        return "home";
 
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/deletePost")
-    public @ResponseBody
-    String deletePost(HttpServletRequest req) throws Exception {
+    public String deletePost(HttpServletRequest req, Model model) {
 
-        postService.deletePost(jsonParser.jsonToObject(req, Post.class));
-        return "Deleted successfully";
+        try {
+            postService.deletePost(jsonParser.jsonToObject(req, Post.class));
+        } catch (
+                IOException ioExcep) {
+            model.addAttribute("error", ioExcep);
+            return "404";
+        } catch (Exception e) {
+            model.addAttribute("error", e);
+            return "500";
+        }
+        return "home";
+
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/getPost", params = {"id"})
-    public @ResponseBody
-    String findPost(@RequestParam(value = "id") long id) throws Exception {
-        return postService.findPost(id).toString();
+    @RequestMapping(method = RequestMethod.GET, value = "/post/{postId}")
+    public String findPost(Model model, @PathVariable String postId) throws Exception {
+        try {
+            model.addAttribute("post", postService.findPost(Long.parseLong(postId)));
+        } catch (
+                IOException ioExcep) {
+            model.addAttribute("error", ioExcep);
+            return "404";
+        } catch (Exception e) {
+            model.addAttribute("error", e);
+            return "500";
+        }
+
+        return "home";
     }
 }

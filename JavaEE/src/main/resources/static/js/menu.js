@@ -19,11 +19,11 @@ function myFunction() {
 
     if (dots.style.display === "none") {
         dots.style.display = "inline";
-        btnText.innerHTML = "Show Logs";
+        btnText.innerHTML = "Show Server Logs";
         moreText.style.display = "none";
     } else {
         dots.style.display = "none";
-        btnText.innerHTML = "Hide Logs";
+        btnText.innerHTML = "Hide Server Logs";
         moreText.style.display = "inline";
     }
 }
