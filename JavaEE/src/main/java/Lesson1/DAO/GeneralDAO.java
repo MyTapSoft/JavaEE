@@ -16,40 +16,21 @@ public class GeneralDAO<T extends IdEntity> {
     private EntityManager entityManager;
 
     public T save(T var) throws Exception {
-        try {
-            entityManager.merge(var);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new Exception("Cant save Entity");
-        }
-        return var;
+        return entityManager.merge(var);
     }
 
     public void delete(long id, Class<?> tClass) throws Exception {
-        try {
-            entityManager.remove(getEntity(id, tClass));
-        } catch (Exception e) {
-            throw new Exception("Cant delete: Entity " + id);
-        }
+        entityManager.remove(getEntity(id, tClass));
     }
 
     public T update(T var) throws Exception {
         getEntity(var.getId(), var.getClass());
-        try {
-            entityManager.merge(var);
-        } catch (Exception e) {
-            throw new Exception("Cant update Entity");
-        }
-        return var;
+        return entityManager.merge(var);
     }
 
     public T getEntity(long id, Class<?> tClass) throws Exception {
-        try {
-            T result = (T) entityManager.find(tClass, id);
-            if (result == null) throw new EntityExistsException("Entity doesn't exist: " + id);
-            return result;
-        } catch (Exception e) {
-            throw new Exception("Something goes wrong");
-        }
+        T result = (T) entityManager.find(tClass, id);
+        if (result == null) throw new EntityExistsException();
+        return result;
     }
 }

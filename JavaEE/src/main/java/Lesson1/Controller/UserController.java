@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.persistence.EntityExistsException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
@@ -30,8 +31,8 @@ public class UserController {
     public String createUser(HttpServletRequest req, Model model) {
         try {
             userService.saveUser(jsonParser.jsonToObject(req, User.class));
-        } catch (IOException ioExcep) {
-            model.addAttribute("error", ioExcep);
+        } catch (IOException e1) {
+            model.addAttribute("error", "You entered wrong data " + e1);
             return "404";
         } catch (Exception e) {
             model.addAttribute("error", e);
@@ -45,8 +46,11 @@ public class UserController {
     public String updateUser(HttpServletRequest req, Model model) {
         try {
             userService.updateUser(jsonParser.jsonToObject(req, User.class));
-        } catch (IOException ioExcep) {
-            model.addAttribute("error", ioExcep);
+        } catch (IOException e1) {
+            model.addAttribute("error", "You entered wrong data " + e1);
+            return "404";
+        } catch (EntityExistsException empty) {
+            model.addAttribute("error", empty + " It seems user doesn't exist. Nothing to update");
             return "404";
         } catch (Exception e) {
             model.addAttribute("error", e);
@@ -61,7 +65,10 @@ public class UserController {
         try {
             model.addAttribute("user", userService.getUser(Long.valueOf(userId)));
         } catch (NumberFormatException numberExcep) {
-            model.addAttribute("error", numberExcep);
+            model.addAttribute("error", "You entered wrong numbers " + numberExcep);
+            return "404";
+        } catch (EntityExistsException empty) {
+            model.addAttribute("error", empty + " It seems there's no user with ID: " + userId);
             return "404";
         } catch (Exception e) {
             model.addAttribute("error", e);
@@ -73,10 +80,12 @@ public class UserController {
     @RequestMapping(method = RequestMethod.DELETE, value = "/deleteUser")
     public String deleteUser(HttpServletRequest req, Model model) {
         try {
-            User user = jsonParser.jsonToObject(req, User.class);
-            userService.deleteUser(user);
-        } catch (IOException ioExcep) {
-            model.addAttribute("error", ioExcep);
+            userService.deleteUser(jsonParser.jsonToObject(req, User.class));
+        } catch (NumberFormatException numberExcep) {
+            model.addAttribute("error", "You entered wrong data " + numberExcep);
+            return "404";
+        } catch (EntityExistsException empty) {
+            model.addAttribute("error", empty + " It seems user doesn't exist. Nothing to delete");
             return "404";
         } catch (Exception e) {
             model.addAttribute("error", e);

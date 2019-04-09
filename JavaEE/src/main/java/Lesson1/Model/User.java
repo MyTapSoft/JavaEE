@@ -1,5 +1,6 @@
 package Lesson1.Model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
@@ -67,6 +68,7 @@ public class User extends IdEntity {
     }
 
     @Column(name = "BIRTH_DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "YYYY-MM-DD HH:mm:ss")
     public Date getBirthDate() {
         return birthDate;
     }

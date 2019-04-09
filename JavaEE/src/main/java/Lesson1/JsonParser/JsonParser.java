@@ -16,11 +16,8 @@ public class JsonParser<T> {
             while ((line = reader.readLine()) != null) {
                 sb.append(line);
             }
-
             return new ObjectMapper().readValue(sb.toString(), objClass);
 
-        } catch (IOException e) {
-            throw new IOException("Can't parse JSON to Object");
         }
     }
 }
