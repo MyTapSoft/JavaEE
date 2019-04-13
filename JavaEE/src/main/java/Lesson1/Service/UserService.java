@@ -6,6 +6,8 @@ import Lesson1.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityExistsException;
+
 @Service
 public class UserService {
 
@@ -29,6 +31,8 @@ public class UserService {
     }
 
     public User getUser(long id) throws Exception {
-        return dao.getUser(id);
+        User result = dao.getUser(id);
+        if (result == null) throw new EntityExistsException();
+        return result;
     }
 }

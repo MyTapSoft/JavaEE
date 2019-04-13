@@ -33,7 +33,7 @@ public class UserController {
             userService.saveUser(jsonParser.jsonToObject(req, User.class));
         } catch (IOException e1) {
             model.addAttribute("error", "You entered wrong data " + e1);
-            return "404";
+            return "400";
         } catch (Exception e) {
             model.addAttribute("error", e);
             return "500";
@@ -48,7 +48,7 @@ public class UserController {
             userService.updateUser(jsonParser.jsonToObject(req, User.class));
         } catch (IOException e1) {
             model.addAttribute("error", "You entered wrong data " + e1);
-            return "404";
+            return "400";
         } catch (EntityExistsException empty) {
             model.addAttribute("error", empty + " It seems user doesn't exist. Nothing to update");
             return "404";
@@ -65,8 +65,8 @@ public class UserController {
         try {
             model.addAttribute("user", userService.getUser(Long.valueOf(userId)));
         } catch (NumberFormatException numberExcep) {
-            model.addAttribute("error", "You entered wrong numbers " + numberExcep);
-            return "404";
+            model.addAttribute("error", "You entered wrong ID " + numberExcep);
+            return "400";
         } catch (EntityExistsException empty) {
             model.addAttribute("error", empty + " It seems there's no user with ID: " + userId);
             return "404";
@@ -83,7 +83,7 @@ public class UserController {
             userService.deleteUser(jsonParser.jsonToObject(req, User.class));
         } catch (NumberFormatException numberExcep) {
             model.addAttribute("error", "You entered wrong data " + numberExcep);
-            return "404";
+            return "400";
         } catch (EntityExistsException empty) {
             model.addAttribute("error", empty + " It seems user doesn't exist. Nothing to delete");
             return "404";

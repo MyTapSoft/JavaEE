@@ -29,8 +29,7 @@ public class GeneralDAO<T extends IdEntity> {
     }
 
     public T getEntity(long id, Class<?> tClass) throws Exception {
-        T result = (T) entityManager.find(tClass, id);
-        if (result == null) throw new EntityExistsException();
-        return result;
+        return (T) entityManager.find(tClass, id);
+
     }
 }

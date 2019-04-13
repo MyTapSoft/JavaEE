@@ -3,8 +3,11 @@ package Lesson1.Service;
 
 import Lesson1.DAO.PostDAO;
 import Lesson1.Model.Post;
+import javafx.geometry.Pos;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.persistence.EntityExistsException;
 
 @Service
 public class PostService {
@@ -29,6 +32,9 @@ public class PostService {
     }
 
     public Post findPost(long id) throws Exception {
-        return dao.findPost(id);
+        Post result = dao.findPost(id);
+        if (result == null) throw new EntityExistsException();
+        return result;
+
     }
 }
