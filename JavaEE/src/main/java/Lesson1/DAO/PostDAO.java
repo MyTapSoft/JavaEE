@@ -13,19 +13,19 @@ public class PostDAO {
         this.dao = dao;
     }
 
-    public Post savePost(Post post) throws Exception {
+    public Post savePost(Post post)  {
         return dao.save(post);
     }
 
-    public Post updatePost(Post post) throws Exception {
+    public Post updatePost(Post post)  {
         return dao.update(post);
     }
 
-    public void deletePost(long id) throws Exception {
+    public void deletePost(long id)  {
         dao.delete(id, Post.class);
     }
 
-    public Post findPost(long id) throws Exception {
+    public Post findPost(long id)  {
         return dao.getEntity(id, Post.class);
     }
 }

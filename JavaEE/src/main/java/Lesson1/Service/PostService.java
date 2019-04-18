@@ -19,19 +19,19 @@ public class PostService {
         this.dao = dao;
     }
 
-    public Post savePost(Post post) throws Exception {
+    public Post savePost(Post post)  {
         return dao.savePost(post);
     }
 
-    public void deletePost(Post post) throws Exception {
+    public void deletePost(Post post) {
         dao.deletePost(post.getId());
     }
 
-    public Post updatePost(Post post) throws Exception {
+    public Post updatePost(Post post)  {
         return dao.updatePost(post);
     }
 
-    public Post findPost(long id) throws Exception {
+    public Post findPost(long id) {
         Post result = dao.findPost(id);
         if (result == null) throw new EntityExistsException();
         return result;

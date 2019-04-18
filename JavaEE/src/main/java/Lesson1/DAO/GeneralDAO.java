@@ -15,20 +15,20 @@ public class GeneralDAO<T extends IdEntity> {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public T save(T var) throws Exception {
+    public T save(T var) {
         return entityManager.merge(var);
     }
 
-    public void delete(long id, Class<?> tClass) throws Exception {
+    public void delete(long id, Class<?> tClass) {
         entityManager.remove(getEntity(id, tClass));
     }
 
-    public T update(T var) throws Exception {
+    public T update(T var) {
         getEntity(var.getId(), var.getClass());
         return entityManager.merge(var);
     }
 
-    public T getEntity(long id, Class<?> tClass) throws Exception {
+    public T getEntity(long id, Class<?> tClass) {
         return (T) entityManager.find(tClass, id);
 
     }

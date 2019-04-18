@@ -3,6 +3,7 @@ package Lesson1.Service;
 
 import Lesson1.DAO.UserDAO;
 import Lesson1.Model.User;
+import javassist.bytecode.DuplicateMemberException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,21 +19,26 @@ public class UserService {
         this.dao = dao;
     }
 
-    public User saveUser(User user) throws Exception {
+    public User saveUser(User user) throws DuplicateMemberException {
+        if (dao.getEmailOrPhoneDuplicate(user.getEmail(), user.getPhoneNumber()).size() != 0) {
+            System.out.println("DuplicateMemberException");
+            throw new DuplicateMemberException("Email or Phone Number Already Exist");
+        }
         return dao.saveUser(user);
     }
 
-    public User updateUser(User user) throws Exception {
+    public User updateUser(User user) {
         return dao.updateUser(user);
     }
 
-    public void deleteUser(User user) throws Exception {
+    public void deleteUser(User user) {
         dao.deleteUser(user.getId());
     }
 
-    public User getUser(long id) throws Exception {
+    public User getUser(long id) {
         User result = dao.getUser(id);
         if (result == null) throw new EntityExistsException();
+
         return result;
     }
 }
