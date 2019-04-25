@@ -15,7 +15,7 @@ public class User extends IdEntity {
     private String userName;
     private String realName;
     private String email;
-    private long phoneNumber;
+    private String phoneNumber;
     private Date birthDate;
     private List<Post> posts = new ArrayList<>();
 
@@ -59,11 +59,11 @@ public class User extends IdEntity {
     }
 
     @Column(name = "PHONE_NUMBER")
-    public long getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(long phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 

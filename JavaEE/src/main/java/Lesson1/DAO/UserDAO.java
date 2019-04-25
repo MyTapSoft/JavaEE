@@ -37,12 +37,15 @@ public class UserDAO {
         return dao.getEntity(id, User.class);
     }
 
-    public List<User> getEmailOrPhoneDuplicate(String userMail, long phoneNumber) {
-        return entityManager.createNativeQuery(
+    public int findUserDuplicate(String userMail, String phoneNumber) {
+        List<User> list = entityManager.createNativeQuery(
                 "SELECT * FROM USER1 " +
                         "WHERE EMAIL = :userMail OR PHONE_NUMBER = :phoneNumber", User.class)
                 .setParameter("userMail", userMail)
                 .setParameter("phoneNumber", phoneNumber)
                 .getResultList();
+        if (list.size() == 0) return 0;
+        else return 1;
+
     }
 }

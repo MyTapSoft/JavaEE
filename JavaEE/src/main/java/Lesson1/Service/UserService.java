@@ -20,7 +20,7 @@ public class UserService {
     }
 
     public User saveUser(User user) throws DuplicateMemberException {
-        if (dao.getEmailOrPhoneDuplicate(user.getEmail(), user.getPhoneNumber()).size() != 0) {
+        if (dao.findUserDuplicate(user.getEmail(), user.getPhoneNumber()) != 0) {
             throw new DuplicateMemberException("Email or Phone Number Already Exist");
         }
         return dao.saveUser(user);
