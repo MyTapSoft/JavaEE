@@ -14,6 +14,8 @@ public class UserDAO {
     private GeneralDAO<User> dao;
     @PersistenceContext
     private EntityManager entityManager;
+    private static final String query = "SELECT * FROM USER1 " +
+            "WHERE EMAIL = :userMail OR PHONE_NUMBER = :phoneNumber";
 
     @Autowired
     public UserDAO(GeneralDAO<User> dao) {
@@ -39,8 +41,7 @@ public class UserDAO {
 
     public int findUserDuplicate(String userMail, String phoneNumber) {
         List<User> list = entityManager.createNativeQuery(
-                "SELECT * FROM USER1 " +
-                        "WHERE EMAIL = :userMail OR PHONE_NUMBER = :phoneNumber", User.class)
+                query, User.class)
                 .setParameter("userMail", userMail)
                 .setParameter("phoneNumber", phoneNumber)
                 .getResultList();
