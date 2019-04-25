@@ -39,14 +39,13 @@ public class UserDAO {
         return dao.getEntity(id, User.class);
     }
 
-    public int findUserDuplicate(String userMail, String phoneNumber) {
-        List<User> list = entityManager.createNativeQuery(
+    public User findUserDuplicate(String userMail, String phoneNumber) {
+        return (User) entityManager.createNativeQuery(
                 query, User.class)
                 .setParameter("userMail", userMail)
                 .setParameter("phoneNumber", phoneNumber)
-                .getResultList();
-        if (list.size() == 0) return 0;
-        else return 1;
+                .getSingleResult();
+
 
     }
 }
