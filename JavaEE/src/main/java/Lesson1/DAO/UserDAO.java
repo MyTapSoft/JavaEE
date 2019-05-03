@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.List;
 
 
 @Repository
@@ -14,8 +13,12 @@ public class UserDAO {
     private GeneralDAO<User> dao;
     @PersistenceContext
     private EntityManager entityManager;
-    private static final String query = "SELECT * FROM USER1 " +
+    private static final String findDuplicateUser = "SELECT * FROM USER1 " +
             "WHERE EMAIL = :userMail OR PHONE_NUMBER = :phoneNumber";
+
+    private static final String loginUser = "SELECT * FROM USER1 " +
+            "WHERE USER_NAME = :login AND PASSWORD = :password";
+
 
     @Autowired
     public UserDAO(GeneralDAO<User> dao) {
@@ -41,11 +44,16 @@ public class UserDAO {
 
     public User findUserDuplicate(String userMail, String phoneNumber) {
         return (User) entityManager.createNativeQuery(
-                query, User.class)
+                findDuplicateUser, User.class)
                 .setParameter("userMail", userMail)
                 .setParameter("phoneNumber", phoneNumber)
                 .getSingleResult();
+    }
 
-
+    public User login(String login, String password) {
+        return (User) entityManager.createNativeQuery(loginUser, User.class)
+                .setParameter("login", login)
+                .setParameter("password", password)
+                .getSingleResult();
     }
 }

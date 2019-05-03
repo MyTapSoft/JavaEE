@@ -18,6 +18,8 @@ public class User extends IdEntity {
     private String phoneNumber;
     private Date birthDate;
     private List<Post> posts = new ArrayList<>();
+    private String password;
+
 
     @Id
     @SequenceGenerator(name = "SEQ", sequenceName = "FILE_SEQ", allocationSize = 1)
@@ -85,6 +87,14 @@ public class User extends IdEntity {
 
     public void setPosts(List<Post> posts) {
         this.posts = posts;
+    }
+    @Column(name = "PASSWORD")
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override

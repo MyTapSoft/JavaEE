@@ -16,7 +16,8 @@ public class GeneralDAO<T extends IdEntity> {
     private EntityManager entityManager;
 
     public T save(T var) {
-        return entityManager.merge(var);
+        entityManager.persist(var);
+        return var;
     }
 
     public void delete(long id, Class<?> tClass) {
