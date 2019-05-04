@@ -42,7 +42,7 @@ public class UserService {
     }
 
     public User login(String login, String password) throws BadRequestException {
-        User user = dao.login(login, password);
+        User user = dao.getUser(login, password);
         if (user == null) throw new BadRequestException("Incorrect username or password");
         return user;
     }

@@ -50,7 +50,7 @@ public class UserDAO {
                 .getSingleResult();
     }
 
-    public User login(String login, String password) {
+    public User getUser(String login, String password) {
         return (User) entityManager.createNativeQuery(loginUser, User.class)
                 .setParameter("login", login)
                 .setParameter("password", password)

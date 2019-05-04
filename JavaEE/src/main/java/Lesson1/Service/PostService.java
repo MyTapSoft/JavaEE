@@ -1,9 +1,7 @@
 package Lesson1.Service;
 
-
 import Lesson1.DAO.PostDAO;
 import Lesson1.Model.Post;
-import javafx.geometry.Pos;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

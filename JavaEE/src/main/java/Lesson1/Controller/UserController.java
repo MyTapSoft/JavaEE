@@ -119,7 +119,7 @@ public class UserController {
         } catch (BadRequestException badRequest) {
             return new ResponseEntity<>("Wrong User Data!", HttpStatus.BAD_REQUEST);
         } catch (IllegalStateException illegalState) {
-            return new ResponseEntity<>("Invalid Session!", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("Invalid Session!", HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (Exception otherError) {
             return new ResponseEntity<>("Something Wrong!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -129,9 +129,9 @@ public class UserController {
     @RequestMapping(path = "/logout", method = RequestMethod.GET)
     public ResponseEntity<String> logoutUser(HttpSession session) {
         try {
-            session.invalidate();
+            session.removeAttribute("loginStatus");
         } catch (IllegalStateException illegalState) {
-            return new ResponseEntity<>("User Already Logged out!", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Invalid Session!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>("Successfully", HttpStatus.OK);
 
