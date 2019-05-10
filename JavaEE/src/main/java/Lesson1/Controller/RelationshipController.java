@@ -26,9 +26,9 @@ public class RelationshipController {
         try {
             service.addRelationship(userIdFrom, userIdTo);
         } catch (BadRequestException badRequest) {
-            return new ResponseEntity<>("Bad Request", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(badRequest.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception otherError) {
-            return new ResponseEntity<>("Something Wrong!", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(otherError.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return new ResponseEntity<>("Request Send", HttpStatus.OK);
@@ -40,35 +40,35 @@ public class RelationshipController {
                                                      @RequestParam(value = "status") String status) {
         try {
             service.updateRelationship(userIdFrom, userIdTo, status);
-        } catch (BadRequestException e) {
-            return new ResponseEntity<>("Bad Request", HttpStatus.BAD_REQUEST);
+        } catch (BadRequestException badRequest) {
+            return new ResponseEntity<>(badRequest.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception otherError) {
-            return new ResponseEntity<>("Something Wrong!", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(otherError.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>("Request Send", HttpStatus.OK);
 
     }
 
     @RequestMapping(path = "/incomeRequests", method = RequestMethod.GET)
-    public ResponseEntity<String> incomeRequests(@RequestParam(value = "userId") String userId, Model model) {
+    public String incomeRequests(@RequestParam(value = "userId") String userId, Model model) {
         try {
-            service.getIncomeRequests(userId);
-        }catch (Exception e){
-            return new ResponseEntity<>("Something Wrong!", HttpStatus.INTERNAL_SERVER_ERROR);
+            model.addAttribute("success", service.getIncomeRequests(userId));
+        } catch (Exception otherExc) {
+            model.addAttribute("error", otherExc.getMessage());
         }
-        return new ResponseEntity<>("Request Send", HttpStatus.OK);
+        return "user-requests";
 
     }
 
     @RequestMapping(path = "/outcomeRequests", method = RequestMethod.GET)
-    public ResponseEntity<String> outcomeRequests(@RequestParam(value = "userId") String userId) {
+    public String outcomeRequests(@RequestParam(value = "userId") String userId, Model model) {
 
         try {
-            service.getOutcomeRequests(userId);
-        }catch (Exception e){
-            return new ResponseEntity<>("Something Wrong!", HttpStatus.INTERNAL_SERVER_ERROR);
+            model.addAttribute("success", service.getOutcomeRequests(userId));
+        } catch (Exception otherExc) {
+            model.addAttribute("error", otherExc.getMessage());
         }
-        return new ResponseEntity<>("Request Send", HttpStatus.OK);
+        return "user-requests";
 
     }
 }

@@ -13,11 +13,11 @@ import java.util.List;
 public class RelationshipDAO {
     @PersistenceContext
     EntityManager entityManager;
-    private static final String INCOME_REQUESTS = "SELECT * FROM RELATIONSHIP " +
+    private static final String INCOME_USER_REQUESTS = "SELECT * FROM RELATIONSHIP " +
             "WHERE USER_ID_TO = :id";
-    private static final String OUTCOME_REQUESTS = "SELECT * FROM RELATIONSHIP " +
+    private static final String OUTCOME_USER_REQUESTS = "SELECT * FROM RELATIONSHIP " +
             "WHERE USER_ID_FROM = :id";
-    private static final String GET_REQUESTS = "SELECT * FROM RELATIONSHIP " +
+    private static final String GET_ALL_USER_REQUESTS = "SELECT * FROM RELATIONSHIP " +
             "WHERE USER_ID_FROM = :idOne OR USER_ID_FROM = :idTwo"
             + " AND USER_ID_FROM = :idTwo OR USER_ID_FROM = :idOne";
 
@@ -34,19 +34,19 @@ public class RelationshipDAO {
     }
 
     public List<Relationship> getIncomeRequests(String userId) {
-        return entityManager.createNativeQuery(INCOME_REQUESTS, Relationship.class)
+        return entityManager.createNativeQuery(INCOME_USER_REQUESTS, Relationship.class)
                 .setParameter("id", userId)
                 .getResultList();
     }
 
     public List<Relationship> getOutcomeRequests(String userId) {
-        return entityManager.createNativeQuery(OUTCOME_REQUESTS, Relationship.class)
+        return entityManager.createNativeQuery(OUTCOME_USER_REQUESTS, Relationship.class)
                 .setParameter("id", userId)
                 .getResultList();
     }
 
     public Relationship getRelationship(long userOne, long userTwo) {
-        return (Relationship) entityManager.createNativeQuery(GET_REQUESTS, Relationship.class)
+        return (Relationship) entityManager.createNativeQuery(GET_ALL_USER_REQUESTS, Relationship.class)
                 .setParameter("idOne", userOne)
                 .setParameter("idTwo", userTwo)
                 .getSingleResult();

@@ -36,8 +36,8 @@ public class UserController {
         } catch (IOException IOException) {
             model.addAttribute("error", "You entered wrong data " + IOException);
             return "400";
-        } catch (Exception otherError) {
-            model.addAttribute("error", otherError);
+        } catch (Exception otherExc) {
+            model.addAttribute("error", otherExc);
             return "500";
         }
 
@@ -54,8 +54,8 @@ public class UserController {
         } catch (EntityExistsException emptyEntity) {
             model.addAttribute("error", emptyEntity + " It seems user doesn't exist. Nothing to update");
             return "404";
-        } catch (Exception otherError) {
-            model.addAttribute("error", otherError);
+        } catch (Exception otherExc) {
+            model.addAttribute("error", otherExc);
             return "500";
         }
 
@@ -72,8 +72,8 @@ public class UserController {
         } catch (EntityExistsException emptyEntity) {
             model.addAttribute("error", emptyEntity + " It seems there's no user with ID: " + userId);
             return "404";
-        } catch (Exception otherException) {
-            model.addAttribute("error", otherException);
+        } catch (Exception otherExc) {
+            model.addAttribute("error", otherExc);
             return "500";
         }
         return "user";
@@ -84,13 +84,13 @@ public class UserController {
         try {
             userService.deleteUser(jsonParser.jsonToObject(req, User.class));
         } catch (NumberFormatException parseException) {
-            model.addAttribute("error", "You entered wrong data " + parseException);
+            model.addAttribute("error", parseException);
             return "400";
         } catch (EntityExistsException emptyEntity) {
-            model.addAttribute("error", emptyEntity + " It seems user doesn't exist. Nothing to delete");
+            model.addAttribute("error", emptyEntity + " It seems user doesn't exist");
             return "404";
-        } catch (Exception otherException) {
-            model.addAttribute("error", otherException);
+        } catch (Exception otherExc) {
+            model.addAttribute("error", otherExc);
             return "500";
         }
         return "home";
@@ -100,10 +100,10 @@ public class UserController {
     public ResponseEntity<String> registerUser(@ModelAttribute User user) {
         try {
             userService.saveUser(user);
-        } catch (BadRequestException duplicate) {
-            return new ResponseEntity<>("User with same email or phone number  already exist", HttpStatus.CONFLICT);
-        } catch (Exception otherError) {
-            return new ResponseEntity<>("Something Wrong!", HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (BadRequestException duplicateExc) {
+            return new ResponseEntity<>(duplicateExc.getMessage(), HttpStatus.CONFLICT);
+        } catch (Exception otherExc) {
+            return new ResponseEntity<>(otherExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>("User Saved Successfully", HttpStatus.OK);
     }
@@ -117,11 +117,9 @@ public class UserController {
             userService.login(username, password);
             session.setAttribute("loginStatus", "true");
         } catch (BadRequestException badRequest) {
-            return new ResponseEntity<>("Wrong User Data!", HttpStatus.BAD_REQUEST);
-        } catch (IllegalStateException illegalState) {
-            return new ResponseEntity<>("Invalid Session!", HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (Exception otherError) {
-            return new ResponseEntity<>("Something Wrong!", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(badRequest.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception otherExc) {
+            return new ResponseEntity<>(otherExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>("Successfully login", HttpStatus.OK);
     }
@@ -130,8 +128,8 @@ public class UserController {
     public ResponseEntity<String> logoutUser(HttpSession session) {
         try {
             session.removeAttribute("loginStatus");
-        } catch (IllegalStateException illegalState) {
-            return new ResponseEntity<>("Invalid Session!", HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception otherExc) {
+            return new ResponseEntity<>(otherExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>("Successfully", HttpStatus.OK);
 

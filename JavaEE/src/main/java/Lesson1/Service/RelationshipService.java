@@ -26,11 +26,22 @@ public class RelationshipService {
     }
 
     public Relationship updateRelationship(String userIdFrom, String userIdTo, String status) throws BadRequestException {
-        if (dao.getRelationship(Long.parseLong(userIdFrom), Long.parseLong(userIdTo)) == null)
+        //Status code:	0 - Pending, 1 - Accepted, 2 - Declined, 3 - Deleted
+        Relationship relationship = dao.getRelationship(Long.parseLong(userIdFrom), Long.parseLong(userIdTo));
+        if (relationship == null)
             throw new BadRequestException("Relationship doesn't exist");
-        Relationship relationship = createNewRelationship(userIdFrom, userIdTo);
-        relationship.setStatus(Short.parseShort(status));
+        short desiredStatus = Short.parseShort(status);
+        if (relationship.getStatus() == desiredStatus)
+            throw new BadRequestException("Same status already exist");
+        if (desiredStatus == 3 && relationship.getStatus() != 1)
+            throw new BadRequestException("Incorrect status");
+        if (desiredStatus == 2 && relationship.getStatus() != 0)
+            throw new BadRequestException("Incorrect status");
+        if (desiredStatus == 1 && relationship.getStatus() != 0 || relationship.getStatus() != 3)
+            throw new BadRequestException("Incorrect status");
+        relationship.setStatus(desiredStatus);
         return dao.updateRelationship(relationship);
+        //При такой структуре пользователь может принять/отклонить запрос за другого пользователя.
     }
 
     public List<Relationship> getIncomeRequests(String userId) {
@@ -47,11 +58,13 @@ public class RelationshipService {
         long from = Long.parseLong(userIdFrom);
         long to = Long.parseLong(userIdTo);
         if (from == to) throw new BadRequestException("IDs Are Same");
-        Relationship relationship = new Relationship();
-        relationship.setUserIdFrom(from);
-        relationship.setUserIdTo(to);
-        relationship.setStatus((short) 0);
-        return relationship;
+        Relationship relationship = dao.getRelationship(from, to);
+        if (relationship != null) throw new BadRequestException("Relationship Already Exist");
+        Relationship result = new Relationship();
+        result.setUserIdFrom(from);
+        result.setUserIdTo(to);
+        result.setStatus((short) 0);
+        return result;
     }
 
 }

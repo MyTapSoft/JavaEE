@@ -28,11 +28,11 @@ public class PostController {
     public String savePost(HttpServletRequest req, Model model) {
         try {
             model.addAttribute("post", postService.savePost(jsonParser.jsonToObject(req, Post.class)));
-        } catch (IOException e1) {
-            model.addAttribute("error", "You entered wrong data " + e1);
+        } catch (IOException IOExc) {
+            model.addAttribute("error", "You entered wrong data " + IOExc);
             return "400";
-        } catch (Exception e) {
-            model.addAttribute("error", e);
+        } catch (Exception otherException) {
+            model.addAttribute("error", otherException);
             return "500";
         }
 
@@ -44,14 +44,14 @@ public class PostController {
     public String updatePost(HttpServletRequest req, Model model) {
         try {
             model.addAttribute("post", postService.updatePost(jsonParser.jsonToObject(req, Post.class)));
-        } catch (IOException e1) {
-            model.addAttribute("error", "You entered wrong data " + e1);
+        } catch (IOException IOExc) {
+            model.addAttribute("error", "You entered wrong data " + IOExc);
             return "400";
-        } catch (EntityExistsException empty) {
-            model.addAttribute("error", empty + " It seems post doesn't exist. Nothing to update");
+        } catch (EntityExistsException emptyExc) {
+            model.addAttribute("error", emptyExc + " It seems post doesn't exist. Nothing to update");
             return "404";
-        } catch (Exception e) {
-            model.addAttribute("error", e);
+        } catch (Exception otherExc) {
+            model.addAttribute("error", otherExc);
             return "500";
         }
 
@@ -63,14 +63,14 @@ public class PostController {
     public String deletePost(HttpServletRequest req, Model model) {
         try {
             postService.deletePost(jsonParser.jsonToObject(req, Post.class));
-        } catch (NumberFormatException numberExcep) {
-            model.addAttribute("error", "You entered wrong data " + numberExcep);
+        } catch (NumberFormatException numberExc) {
+            model.addAttribute("error", "You entered wrong data " + numberExc);
             return "400";
-        } catch (EntityExistsException empty) {
-            model.addAttribute("error", empty + " It seems post doesn't exist. Nothing to delete");
+        } catch (EntityExistsException emptyExc) {
+            model.addAttribute("error", emptyExc + " It seems post doesn't exist. Nothing to delete");
             return "404";
-        } catch (Exception e) {
-            model.addAttribute("error", e);
+        } catch (Exception otherExc) {
+            model.addAttribute("error", otherExc);
             return "500";
         }
         return "home";
@@ -81,14 +81,14 @@ public class PostController {
     public String findPost(Model model, @PathVariable String postId) {
         try {
             model.addAttribute("post", postService.findPost(Long.parseLong(postId)));
-        } catch (NumberFormatException numberExcep) {
-            model.addAttribute("error", "You entered wrong numbers " + numberExcep);
+        } catch (NumberFormatException numberExc) {
+            model.addAttribute("error", "You entered wrong numbers " + numberExc);
             return "400";
-        } catch (EntityExistsException empty) {
-            model.addAttribute("error", empty + " It seems there's no post with ID: " + postId);
+        } catch (EntityExistsException emptyExc) {
+            model.addAttribute("error", emptyExc + " It seems there's no post with ID: " + postId);
             return "404";
-        } catch (Exception e) {
-            model.addAttribute("error", e);
+        } catch (Exception otherExc) {
+            model.addAttribute("error", otherExc);
             return "500";
         }
 
