@@ -6,17 +6,19 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 
 
 @Repository
+@Transactional
 public class UserDAO {
     private GeneralDAO<User> dao;
     @PersistenceContext
     private EntityManager entityManager;
-    private static final String findDuplicateUser = "SELECT * FROM USER1 " +
+    private static final String FIND_DUPLICATE_USER = "SELECT * FROM USER1 " +
             "WHERE EMAIL = :userMail OR PHONE_NUMBER = :phoneNumber";
 
-    private static final String loginUser = "SELECT * FROM USER1 " +
+    private static final String LOGIN_USER = "SELECT * FROM USER1 " +
             "WHERE USER_NAME = :login AND PASSWORD = :password";
 
 
@@ -44,14 +46,14 @@ public class UserDAO {
 
     public User findUserDuplicate(String userMail, String phoneNumber) {
         return (User) entityManager.createNativeQuery(
-                findDuplicateUser, User.class)
+                FIND_DUPLICATE_USER, User.class)
                 .setParameter("userMail", userMail)
                 .setParameter("phoneNumber", phoneNumber)
                 .getSingleResult();
     }
 
     public User getUser(String login, String password) {
-        return (User) entityManager.createNativeQuery(loginUser, User.class)
+        return (User) entityManager.createNativeQuery(LOGIN_USER, User.class)
                 .setParameter("login", login)
                 .setParameter("password", password)
                 .getSingleResult();

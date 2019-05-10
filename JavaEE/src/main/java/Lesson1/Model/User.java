@@ -19,6 +19,7 @@ public class User extends IdEntity {
     private Date birthDate;
     private List<Post> posts = new ArrayList<>();
     private String password;
+    private List<Relationship> relationships;
 
 
     @Id
