@@ -20,11 +20,14 @@ public class RelationshipService {
     public Relationship addRelationship(String userIdFrom, String userIdTo) throws BadRequestException {
 
         Relationship relationship = createNewRelationship(userIdFrom, userIdTo);
-        if (dao.getRelaionship(relationship) != null) throw new BadRequestException("Relationship Already Exist");
+        if (dao.getRelationship(relationship.getUserIdFrom(), relationship.getUserIdTo()) != null)
+            throw new BadRequestException("Relationship Already Exist");
         return dao.addRelationship(relationship);
     }
 
     public Relationship updateRelationship(String userIdFrom, String userIdTo, String status) throws BadRequestException {
+        if (dao.getRelationship(Long.parseLong(userIdFrom), Long.parseLong(userIdTo)) == null)
+            throw new BadRequestException("Relationship doesn't exist");
         Relationship relationship = createNewRelationship(userIdFrom, userIdTo);
         relationship.setStatus(Short.parseShort(status));
         return dao.updateRelationship(relationship);

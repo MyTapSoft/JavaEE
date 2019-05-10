@@ -27,7 +27,10 @@ public class RelationshipController {
             service.addRelationship(userIdFrom, userIdTo);
         } catch (BadRequestException badRequest) {
             return new ResponseEntity<>("Bad Request", HttpStatus.BAD_REQUEST);
+        } catch (Exception otherError) {
+            return new ResponseEntity<>("Something Wrong!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
         return new ResponseEntity<>("Request Send", HttpStatus.OK);
     }
 
@@ -39,6 +42,8 @@ public class RelationshipController {
             service.updateRelationship(userIdFrom, userIdTo, status);
         } catch (BadRequestException e) {
             return new ResponseEntity<>("Bad Request", HttpStatus.BAD_REQUEST);
+        } catch (Exception otherError) {
+            return new ResponseEntity<>("Something Wrong!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>("Request Send", HttpStatus.OK);
 

@@ -5,6 +5,33 @@
     <title>Friends</title>
 </head>
 <body>
+<label for="username"><b>Username</b></label>
+<input type="text" placeholder="Enter Username" id="username" required>
 
+<button id="inputRequests">Input</button>
+<button id="outputRequests">Output</button>
+
+
+<script>
+    $("#inputRequests").on('click', function () {
+        var $userName = $('#username');
+        var $password = $('#psw');
+        $.ajax({
+            type: "POST",
+            url: "/login",
+            data: {
+                username: $userName.val(),
+                password: $password.val()
+            },
+            success: function success(data) {
+                alert("User Logged In Successfully");
+            },
+            error: function error(data) {
+                alert("User Can't login");
+            }
+        });
+    });
+
+</script>
 </body>
 </html>

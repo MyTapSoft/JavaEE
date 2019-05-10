@@ -19,7 +19,7 @@ public class RelationshipDAO {
             "WHERE USER_ID_FROM = :id";
     private static final String GET_REQUESTS = "SELECT * FROM RELATIONSHIP " +
             "WHERE USER_ID_FROM = :idOne OR USER_ID_FROM = :idTwo"
-            + " AND USER_ID_FROM = :idTwo OR USER_ID_FROM = :idOnw";
+            + " AND USER_ID_FROM = :idTwo OR USER_ID_FROM = :idOne";
 
 
     public Relationship addRelationship(Relationship relationship) {
@@ -28,7 +28,7 @@ public class RelationshipDAO {
     }
 
     public Relationship updateRelationship(Relationship relationship) {
-        relationship = getRelaionship(relationship);
+        relationship = getRelationship(relationship.getUserIdFrom(), relationship.getUserIdTo());
         entityManager.merge(relationship);
         return relationship;
     }
@@ -45,10 +45,10 @@ public class RelationshipDAO {
                 .getResultList();
     }
 
-    public Relationship getRelaionship(Relationship relationship) {
+    public Relationship getRelationship(long userOne, long userTwo) {
         return (Relationship) entityManager.createNativeQuery(GET_REQUESTS, Relationship.class)
-                .setParameter("idOne", relationship.getUserIdFrom())
-                .setParameter("idTwo", relationship.getUserIdTo())
+                .setParameter("idOne", userOne)
+                .setParameter("idTwo", userTwo)
                 .getSingleResult();
     }
 
