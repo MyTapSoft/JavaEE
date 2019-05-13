@@ -2,14 +2,15 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Home Page</title>
+    <title>All Users Page</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
-    <link th:href="@{/static/css/style.css}" rel="stylesheet" />
+    <link rel="stylesheet" href="../../static/css/style.css">
+    <script src="../../static/js/menu.js"></script>
 </head>
 <body>
 
-<audio id="onClick" src="../static/sound/onClick.wav"></audio>
+<audio id="onClick" src="../../static/sound/onClick.wav"></audio>
 
 <div class="overlay"></div>
 <div class="topnav" id="myTopnav">
@@ -21,7 +22,27 @@
     </a>
 </div>
 
-<script src="../static/js/menu.js"></script>
+
+<table>
+    <thead>
+    <tr>
+        <th> Username </th>
+        <th> ID </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${user.empty}">
+        <td colspan="2"> No Books Available </td>
+    </tr>
+    <tr th:each="user : ${user}">
+        <td><span th:text="${user.userName}"> Username </span></td>
+        <td><span th:text="${user.id}"> ID </span></td>
+    </tr>
+    </tbody>
+</table>
+
+
+<script src="../../static/js/menu.js"></script>
 
 </body>
 

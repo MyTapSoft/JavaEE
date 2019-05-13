@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityExistsException;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -39,6 +40,14 @@ public class UserService {
         if (result == null) throw new EntityExistsException();
 
         return result;
+    }
+
+    public List<User> getAllUsers() {
+        return dao.getAllUsers();
+    }
+
+    public List<User> getUserFriends(long userId) {
+        return dao.getUserFriends(userId);
     }
 
     public User login(String login, String password) throws BadRequestException {

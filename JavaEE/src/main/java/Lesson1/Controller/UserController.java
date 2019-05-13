@@ -29,20 +29,20 @@ public class UserController {
         this.jsonParser = jsonParser;
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/saveUser")
-    public String createUser(HttpServletRequest req, Model model) {
-        try {
-            userService.saveUser(jsonParser.jsonToObject(req, User.class));
-        } catch (IOException IOException) {
-            model.addAttribute("error", "You entered wrong data " + IOException);
-            return "400";
-        } catch (Exception otherExc) {
-            model.addAttribute("error", otherExc);
-            return "500";
-        }
-
-        return "home";
-    }
+//    @RequestMapping(method = RequestMethod.POST, value = "/saveUser")
+//    public String createUser(HttpServletRequest req, Model model) {
+//        try {
+//            userService.saveUser(jsonParser.jsonToObject(req, User.class));
+//        } catch (IOException IOException) {
+//            model.addAttribute("error", "You entered wrong data " + IOException);
+//            return "400";
+//        } catch (Exception otherExc) {
+//            model.addAttribute("error", otherExc);
+//            return "500";
+//        }
+//
+//        return "home";
+//    }
 
     @RequestMapping(method = RequestMethod.POST, value = "/updateUser")
     public String updateUser(HttpServletRequest req, Model model) {
@@ -59,7 +59,7 @@ public class UserController {
             return "500";
         }
 
-        return "home";
+        return "user-profile";
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/user/{userId}")
@@ -76,7 +76,7 @@ public class UserController {
             model.addAttribute("error", otherExc);
             return "500";
         }
-        return "user";
+        return "user-profile";
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/deleteUser")
@@ -109,13 +109,20 @@ public class UserController {
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
-    public ResponseEntity<String> loginUser(HttpSession session, @RequestParam(value = "username") String username, @RequestParam(value = "password") String password) {
+    public ResponseEntity<String> loginUser(HttpSession session,
+                                            @RequestParam(value = "username") String username,
+                                            @RequestParam(value = "password") String password) {
         try {
 
             if (session.getAttribute("loginStatus") != null)
                 return new ResponseEntity<>("User Already Logged in!", HttpStatus.BAD_REQUEST);
-            userService.login(username, password);
+            User user = userService.login(username, password);
             session.setAttribute("loginStatus", "true");
+            session.setAttribute("userId", user.getId());
+            session.setAttribute("userName", user.getUserName());
+            session.setAttribute("realName", user.getRealName());
+            session.setAttribute("birthDate", user.getBirthDate());
+            session.setAttribute("userPosts", user.getPosts());
         } catch (BadRequestException badRequest) {
             return new ResponseEntity<>(badRequest.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception otherExc) {
@@ -128,11 +135,41 @@ public class UserController {
     public ResponseEntity<String> logoutUser(HttpSession session) {
         try {
             session.removeAttribute("loginStatus");
+            session.removeAttribute("userId");
+            session.removeAttribute("userName");
+            session.removeAttribute("realName");
+            session.removeAttribute("birthDate");
+            session.removeAttribute("userPosts");
         } catch (Exception otherExc) {
             return new ResponseEntity<>(otherExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>("Successfully", HttpStatus.OK);
 
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/allUsers")
+    public String allUsersPage(Model model) {
+        try {
+            model.addAttribute("user", userService.getAllUsers());
+        } catch (Exception otherExc) {
+            model.addAttribute("error", otherExc);
+        }
+        return "all-users";
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/friends")
+    public String getUserFriends(Model model, HttpSession session) {
+        if (session.getAttribute("loginStatus") == null) {
+            model.addAttribute("error", "You have to login first");
+            return "401";
+        }
+        try {
+            long userId = (long) session.getAttribute("userId");
+            model.addAttribute("user", userService.getUserFriends(userId));
+        } catch (Exception otherExc) {
+            model.addAttribute("error", otherExc);
+        }
+        return "user/user-friends";
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/register-user")
@@ -141,7 +178,7 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/login")
-    public String loginPAge() {
+    public String loginPage() {
         return "user-login";
     }
 

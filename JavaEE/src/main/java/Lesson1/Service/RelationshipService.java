@@ -20,8 +20,6 @@ public class RelationshipService {
     public Relationship addRelationship(String userIdFrom, String userIdTo) throws BadRequestException {
 
         Relationship relationship = createNewRelationship(userIdFrom, userIdTo);
-        if (dao.getRelationship(relationship.getUserIdFrom(), relationship.getUserIdTo()) != null)
-            throw new BadRequestException("Relationship Already Exist");
         return dao.addRelationship(relationship);
     }
 
@@ -58,8 +56,8 @@ public class RelationshipService {
         long from = Long.parseLong(userIdFrom);
         long to = Long.parseLong(userIdTo);
         if (from == to) throw new BadRequestException("IDs Are Same");
-        Relationship relationship = dao.getRelationship(from, to);
-        if (relationship != null) throw new BadRequestException("Relationship Already Exist");
+        Relationship check = dao.getRelationship(from, to);
+        if (check != null) throw new BadRequestException("Relationship Already Exist");
         Relationship result = new Relationship();
         result.setUserIdFrom(from);
         result.setUserIdTo(to);

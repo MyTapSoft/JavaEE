@@ -2,10 +2,10 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Home Page</title>
+    <title>Unauthorized</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
-    <link th:href="@{/static/css/style.css}" rel="stylesheet" />
+    <link rel="stylesheet" href="../static/css/style.css">
 </head>
 <body>
 
@@ -14,11 +14,21 @@
 <div class="overlay"></div>
 <div class="topnav" id="myTopnav">
     <a onclick="play()" href="http://localhost8080/home" class="active">Home</a>
-    <a onclick="play()" href="http://localhost8080/user-registration">Account</a>
+    <a onclick="play()" href="http://localhost8080/account">Account</a>
     <a onclick="play()" href="http://localhost8080/about">About</a>
     <a href="javascript:void(0);" class="icon" onclick="myFunction()">
         <i class="fa fa-bars"></i>
     </a>
+</div>
+
+<div class="terminal">
+    <h1>Error <span class="errorcode">401</span></h1>
+    <p class="output">Unfortunately, you don't have enough rights for this action...</p>
+    <p class="output">Please login or register and try again</p>
+    <p class="output">Or read server logs<span id="dots">...</span>
+        <span id="more">
+    <p th:text="${error}"></p>
+    <button onclick="myFunction()" id="myBtn">Show Server Logs</button>
 </div>
 
 <script src="../static/js/menu.js"></script>

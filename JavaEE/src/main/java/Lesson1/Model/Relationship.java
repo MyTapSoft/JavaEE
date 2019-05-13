@@ -1,10 +1,12 @@
 package Lesson1.Model;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "RELATIONSHIP")
-public class Relationship {
+public class Relationship implements Serializable {
     private long userIdFrom;
     private long userIdTo;
     private short status;
@@ -38,5 +40,18 @@ public class Relationship {
         this.status = status;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Relationship that = (Relationship) o;
+        return userIdFrom == that.userIdFrom &&
+                userIdTo == that.userIdTo &&
+                status == that.status;
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(userIdFrom, userIdTo, status);
+    }
 }
