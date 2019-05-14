@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,8 +23,8 @@ public class RelationshipController {
         this.service = service;
     }
 
-    @RequestMapping(path = "/addRelationship/{userIdTo}", method = RequestMethod.POST)
-    public ResponseEntity<String> addRelationship(@PathVariable String userIdTo, HttpSession session) {
+    @RequestMapping(path = "/addRelationship", method = RequestMethod.POST)
+    public ResponseEntity<String> addRelationship(@RequestParam String userIdTo, HttpSession session) {
 
         try {
             isUserLogin(session);
@@ -75,7 +74,7 @@ public class RelationshipController {
         } catch (Exception otherExc) {
             model.addAttribute("error", otherExc.getMessage());
         }
-        return "user-requests";
+        return "user-friends";
 
     }
 
@@ -91,13 +90,13 @@ public class RelationshipController {
         } catch (Exception otherExc) {
             model.addAttribute("error", otherExc.getMessage());
         }
-        return "user-requests";
+        return "user-friends";
 
     }
 
 
     private void isUserLogin(HttpSession session) throws UnauthorizedException {
-        if (session.getAttribute("loginStatus") != null) throw new UnauthorizedException("You have to login first");
+        if (session.getAttribute("loginStatus") == null) throw new UnauthorizedException("You have to login first");
     }
 
 }

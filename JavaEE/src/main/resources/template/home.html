@@ -1,15 +1,16 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>.
+<html lang="en" >
 <head>
     <meta charset="UTF-8">
     <title>Home Page</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
-    <link th:href="@{/static/css/style.css}" rel="stylesheet" />
+    <link rel="stylesheet" href="../../static/css/style.css">
+    <script src="../static/js/menu.js"></script>
 </head>
 <body>
 
-<audio id="onClick" src="../static/sound/onClick.wav"></audio>
+<audio id="onClick" src="../../static/sound/onClick.wav"></audio>
 
 <div class="overlay"></div>
 <div class="topnav" id="myTopnav">
@@ -20,8 +21,6 @@
         <i class="fa fa-bars"></i>
     </a>
 </div>
-
-<script src="../static/js/menu.js"></script>
 
 </body>
 

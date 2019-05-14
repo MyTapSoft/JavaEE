@@ -23,5 +23,27 @@
     </a>
 </div>
 <p th:text="${user}"></p>
+
+<button id="addFriend">Add Friend</button>
+
+<script>
+    $("#addFriend").on('click', function () {
+        var $userId = [[${user.id}]];
+        $.ajax({
+            type: "POST",
+            url: "/addRelationship",
+            data: {
+                userIdTo: $userId
+            },
+            success: function success(data) {
+                alert("Success");
+            },
+            error: function error(data) {
+                alert("Error");
+            }
+        });
+    });
+
+</script>
 </body>
 </html>

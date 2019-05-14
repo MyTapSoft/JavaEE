@@ -6,6 +6,7 @@ import Lesson1.Model.Relationship;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.NoResultException;
 import java.util.List;
 
 @Service
@@ -18,7 +19,6 @@ public class RelationshipService {
     }
 
     public Relationship addRelationship(String userIdFrom, String userIdTo) throws BadRequestException {
-
         Relationship relationship = createNewRelationship(userIdFrom, userIdTo);
         return dao.addRelationship(relationship);
     }
@@ -56,13 +56,19 @@ public class RelationshipService {
         long from = Long.parseLong(userIdFrom);
         long to = Long.parseLong(userIdTo);
         if (from == to) throw new BadRequestException("IDs Are Same");
-        Relationship check = dao.getRelationship(from, to);
-        if (check != null) throw new BadRequestException("Relationship Already Exist");
-        Relationship result = new Relationship();
-        result.setUserIdFrom(from);
-        result.setUserIdTo(to);
-        result.setStatus((short) 0);
-        return result;
+        try {
+                dao.getRelationship(from, to);
+            System.out.println("1");
+        } catch (NoResultException noResultExc) {
+            Relationship result = new Relationship();
+            result.setUserIdFrom(from);
+            result.setUserIdTo(to);
+            result.setStatus((short) 0);
+            System.out.println(result);
+            return result;
+        }
+        System.out.println("2");
+        throw new BadRequestException("Relationship Already Exist");
     }
 
 }

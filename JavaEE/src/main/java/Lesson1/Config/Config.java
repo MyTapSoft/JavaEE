@@ -86,4 +86,11 @@ public class Config implements WebMvcConfigurer {
         return transactionManager;
     }
 
+//    @Override
+//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//        registry
+//                .addResourceHandler("/resources/**")
+//                .addResourceLocations("/resources/");
+//    }
+
 }

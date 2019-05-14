@@ -54,4 +54,13 @@ public class Relationship implements Serializable {
     public int hashCode() {
         return Objects.hash(userIdFrom, userIdTo, status);
     }
+
+    @Override
+    public String toString() {
+        return "Relationship{" +
+                "userIdFrom=" + userIdFrom +
+                ", userIdTo=" + userIdTo +
+                ", status=" + status +
+                '}';
+    }
 }

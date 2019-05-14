@@ -76,7 +76,7 @@ public class UserController {
             model.addAttribute("error", otherExc);
             return "500";
         }
-        return "user-profile";
+        return "user/user-profile";
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/deleteUser")
@@ -154,7 +154,7 @@ public class UserController {
         } catch (Exception otherExc) {
             model.addAttribute("error", otherExc);
         }
-        return "all-users";
+        return "user/all-users";
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/friends")
@@ -174,12 +174,12 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/register-user")
     public String registerUserPage() {
-        return "user-registration";
+        return "user/user-registration";
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/login")
     public String loginPage() {
-        return "user-login";
+        return "user/user-login";
     }
 
 
