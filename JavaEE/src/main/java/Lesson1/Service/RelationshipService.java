@@ -3,6 +3,7 @@ package Lesson1.Service;
 import Lesson1.DAO.RelationshipDAO;
 import Lesson1.Exceptions.BadRequestException;
 import Lesson1.Model.Relationship;
+import javassist.bytecode.DuplicateMemberException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ public class RelationshipService {
         this.dao = dao;
     }
 
-    public Relationship addRelationship(String userIdFrom, String userIdTo) throws BadRequestException {
+    public Relationship addRelationship(String userIdFrom, String userIdTo) throws BadRequestException, DuplicateMemberException {
         Relationship relationship = createNewRelationship(userIdFrom, userIdTo);
         return dao.addRelationship(relationship);
     }
@@ -52,23 +53,16 @@ public class RelationshipService {
 
     }
 
-    private Relationship createNewRelationship(String userIdFrom, String userIdTo) throws BadRequestException {
+    private Relationship createNewRelationship(String userIdFrom, String userIdTo) throws BadRequestException, DuplicateMemberException {
         long from = Long.parseLong(userIdFrom);
         long to = Long.parseLong(userIdTo);
         if (from == to) throw new BadRequestException("IDs Are Same");
-        try {
-                dao.getRelationship(from, to);
-            System.out.println("1");
-        } catch (NoResultException noResultExc) {
-            Relationship result = new Relationship();
-            result.setUserIdFrom(from);
-            result.setUserIdTo(to);
-            result.setStatus((short) 0);
-            System.out.println(result);
-            return result;
-        }
-        System.out.println("2");
-        throw new BadRequestException("Relationship Already Exist");
+        if (dao.getRelationship(from, to) != null) throw new DuplicateMemberException("Relationship Already Exist");
+        Relationship result = new Relationship();
+        result.setUserIdFrom(from);
+        result.setUserIdTo(to);
+        result.setStatus((short) 0);
+        return result;
     }
 
 }

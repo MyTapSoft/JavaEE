@@ -3,8 +3,7 @@ package Lesson1.DAO;
 import Lesson1.Model.Relationship;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.*;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -22,7 +21,9 @@ public class RelationshipDAO {
 
 
     public Relationship addRelationship(Relationship relationship) {
-        entityManager.persist(relationship);
+        System.out.println(relationship);
+        entityManager.persist(relationship);//Не работает!
+        System.out.println(relationship);
         return relationship;
     }
 
@@ -45,11 +46,14 @@ public class RelationshipDAO {
     }
 
     public Relationship getRelationship(long userOne, long userTwo) {
-
-        return (Relationship) entityManager.createNativeQuery(GET_RELATIONSHIP, Relationship.class)
-                .setParameter("idOne", userOne)
-                .setParameter("idTwo", userTwo)
-                .getSingleResult();
+        try {
+            return (Relationship) entityManager.createNativeQuery(GET_RELATIONSHIP, Relationship.class)
+                    .setParameter("idOne", userOne)
+                    .setParameter("idTwo", userTwo)
+                    .getSingleResult();
+        } catch (NoResultException noResultExc) {
+            return null;
+        }
 
     }
 

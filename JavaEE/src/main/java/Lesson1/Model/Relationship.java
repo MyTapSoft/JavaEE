@@ -63,4 +63,5 @@ public class Relationship implements Serializable {
                 ", status=" + status +
                 '}';
     }
+
 }

@@ -3,6 +3,7 @@ package Lesson1.Controller;
 import Lesson1.Exceptions.BadRequestException;
 import Lesson1.Exceptions.UnauthorizedException;
 import Lesson1.Service.RelationshipService;
+import javassist.bytecode.DuplicateMemberException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,10 @@ public class RelationshipController {
         } catch (UnauthorizedException unauthorized) {
             return new ResponseEntity<>(unauthorized.getMessage(), HttpStatus.UNAUTHORIZED);
 
-        } catch (Exception otherError) {
+        }catch (DuplicateMemberException duplicate){
+            return new ResponseEntity<>(duplicate.getMessage(), HttpStatus.CONFLICT);
+        }
+        catch (Exception otherError) {
             return new ResponseEntity<>(otherError.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
