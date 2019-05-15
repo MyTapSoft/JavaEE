@@ -7,7 +7,7 @@ import javassist.bytecode.DuplicateMemberException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.NoResultException;
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -18,6 +18,7 @@ public class RelationshipService {
     public RelationshipService(RelationshipDAO dao) {
         this.dao = dao;
     }
+
 
     public Relationship addRelationship(String userIdFrom, String userIdTo) throws BadRequestException, DuplicateMemberException {
         Relationship relationship = createNewRelationship(userIdFrom, userIdTo);

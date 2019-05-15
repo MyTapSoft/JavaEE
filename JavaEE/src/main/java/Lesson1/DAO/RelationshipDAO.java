@@ -3,15 +3,19 @@ package Lesson1.DAO;
 import Lesson1.Model.Relationship;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
 @Transactional
 public class RelationshipDAO {
+
     @PersistenceContext
-    EntityManager entityManager;
+    private EntityManager entityManager;
+
     private static final String INCOME_USER_REQUESTS = "SELECT * FROM RELATIONSHIP " +
             "WHERE USER_ID_TO = :id";
     private static final String OUTCOME_USER_REQUESTS = "SELECT * FROM RELATIONSHIP " +
@@ -21,8 +25,12 @@ public class RelationshipDAO {
 
 
     public Relationship addRelationship(Relationship relationship) {
-        System.out.println(relationship);
-        entityManager.persist(relationship);//Не работает!
+        try {
+            entityManager.persist(relationship);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        //Не работает!
         System.out.println(relationship);
         return relationship;
     }

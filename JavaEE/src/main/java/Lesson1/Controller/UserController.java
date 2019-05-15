@@ -99,10 +99,13 @@ public class UserController {
     @RequestMapping(path = "/registerUser", method = RequestMethod.POST)
     public ResponseEntity<String> registerUser(@ModelAttribute User user) {
         try {
+            System.out.println("UserController");
             userService.saveUser(user);
         } catch (BadRequestException duplicateExc) {
+            System.out.println(duplicateExc);
             return new ResponseEntity<>(duplicateExc.getMessage(), HttpStatus.CONFLICT);
         } catch (Exception otherExc) {
+            System.out.println(otherExc);
             return new ResponseEntity<>(otherExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>("User Saved Successfully", HttpStatus.OK);

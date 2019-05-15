@@ -68,7 +68,7 @@ public class Config implements WebMvcConfigurer {
     public DriverManagerDataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
-        dataSource.setUrl("jdbc:oracle:thin:@Test.cdl3cqobq0vs.us-east-2.rds.amazonaws.com:1521:ORCL");
+        dataSource.setUrl("jdbc:oracle:thin:@gromcode.cvd9f4kpo1df.us-east-2.rds.amazonaws.com:1521:ORCL");
         dataSource.setUsername("root");
         dataSource.setPassword("260258aaa");
         return dataSource;

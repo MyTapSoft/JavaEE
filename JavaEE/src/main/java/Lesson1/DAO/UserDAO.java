@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
@@ -35,6 +36,7 @@ public class UserDAO {
 
 
     public User saveUser(User user) {
+        System.out.println("DAO");
         return dao.save(user);
     }
 
@@ -65,11 +67,16 @@ public class UserDAO {
     }
 
     public User findUserDuplicate(String userMail, String phoneNumber) {
-        return (User) entityManager.createNativeQuery(
-                FIND_DUPLICATE_USER, User.class)
-                .setParameter("userMail", userMail)
-                .setParameter("phoneNumber", phoneNumber)
-                .getSingleResult();
+        try {
+            return (User) entityManager.createNativeQuery(
+                    FIND_DUPLICATE_USER, User.class)
+                    .setParameter("userMail", userMail)
+                    .setParameter("phoneNumber", phoneNumber)
+                    .getSingleResult();
+        } catch (NoResultException empty) {
+            return null;
+        }
+
     }
 
     public User getUser(String login, String password) {

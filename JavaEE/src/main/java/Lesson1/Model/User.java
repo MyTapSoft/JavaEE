@@ -23,7 +23,7 @@ public class User extends IdEntity {
 
 
     @Id
-    @SequenceGenerator(name = "SEQ", sequenceName = "FILE_SEQ", allocationSize = 1)
+    @SequenceGenerator(name = "SEQ", sequenceName = "USER1_SEQ", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "SEQ")
     @Column(name = "USER1_ID")
     public long getId() {
