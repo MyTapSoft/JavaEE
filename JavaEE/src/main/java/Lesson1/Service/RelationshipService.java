@@ -44,16 +44,6 @@ public class RelationshipService {
         //При такой структуре пользователь может принять/отклонить запрос за другого пользователя.
     }
 
-    public List<Relationship> getIncomeRequests(String userId) {
-        return dao.getIncomeRequests(userId);
-
-    }
-
-    public List<Relationship> getOutcomeRequests(String userId) {
-        return dao.getOutcomeRequests(userId);
-
-    }
-
     private Relationship createNewRelationship(String userIdFrom, String userIdTo) throws BadRequestException, DuplicateMemberException {
         long from = Long.parseLong(userIdFrom);
         long to = Long.parseLong(userIdTo);

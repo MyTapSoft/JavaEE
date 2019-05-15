@@ -67,39 +67,6 @@ public class RelationshipController {
 
     }
 
-    @RequestMapping(path = "/incomeRequests", method = RequestMethod.GET)
-    public String incomeRequests(HttpSession session, Model model) {
-        try {
-            isUserLogin(session);
-            String userId = String.valueOf(session.getAttribute("userId"));
-            model.addAttribute("success", service.getIncomeRequests(userId));
-        } catch (UnauthorizedException unauthorized) {
-            model.addAttribute("error", unauthorized);
-            return "401";
-        } catch (Exception otherExc) {
-            model.addAttribute("error", otherExc.getMessage());
-        }
-        return "user-friends";
-
-    }
-
-    @RequestMapping(path = "/outcomeRequests", method = RequestMethod.GET)
-    public String outcomeRequests(HttpSession session, Model model) {
-        try {
-            isUserLogin(session);
-            String userId = String.valueOf(session.getAttribute("userId"));
-            model.addAttribute("success", service.getOutcomeRequests(userId));
-        } catch (UnauthorizedException unauthorized) {
-            model.addAttribute("error", unauthorized);
-            return "401";
-        } catch (Exception otherExc) {
-            model.addAttribute("error", otherExc.getMessage());
-        }
-        return "user-friends";
-
-    }
-
-
     private void isUserLogin(HttpSession session) throws UnauthorizedException {
         if (session.getAttribute("loginStatus") == null) throw new UnauthorizedException("You have to login first");
     }

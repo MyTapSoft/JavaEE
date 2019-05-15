@@ -2,6 +2,7 @@ package Lesson1.DAO;
 
 import Lesson1.Model.IdEntity;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -9,6 +10,7 @@ import javax.transaction.Transactional;
 
 @Repository
 @Transactional
+@EnableTransactionManagement
 public class GeneralDAO<T extends IdEntity> {
 
     @PersistenceContext

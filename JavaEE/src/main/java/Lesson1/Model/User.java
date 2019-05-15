@@ -19,12 +19,11 @@ public class User extends IdEntity {
     private Date birthDate;
     private List<Post> posts = new ArrayList<>();
     private String password;
-    private List<Relationship> relationships;
 
 
     @Id
-    @SequenceGenerator(name = "SEQ", sequenceName = "USER1_SEQ", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "SEQ")
+    @SequenceGenerator(name = "USER1_SEQ", sequenceName = "USER1_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "USER1_SEQ")
     @Column(name = "USER1_ID")
     public long getId() {
         return id;
@@ -89,6 +88,7 @@ public class User extends IdEntity {
     public void setPosts(List<Post> posts) {
         this.posts = posts;
     }
+
     @Column(name = "PASSWORD")
     public String getPassword() {
         return password;

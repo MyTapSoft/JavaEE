@@ -35,11 +35,11 @@
             data: {
                 userIdTo: $userId
             },
-            success: function success(data) {
-                alert("Success");
+            success: function success() {
+                alert("Your request has been send");
             },
             error: function error(data) {
-                alert("Error");
+                alert(data.message);
             }
         });
     });

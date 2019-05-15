@@ -3,6 +3,7 @@ package Lesson1.Service;
 
 import Lesson1.DAO.UserDAO;
 import Lesson1.Exceptions.BadRequestException;
+import Lesson1.Model.Relationship;
 import Lesson1.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,5 +56,15 @@ public class UserService {
         User user = dao.getUser(login, password);
         if (user == null) throw new BadRequestException("Incorrect username or password");
         return user;
+    }
+
+    public List<User> getIncomeRequests(String userId) {
+        return dao.getIncomeRequests(userId);
+
+    }
+
+    public List<User> getOutcomeRequests(String userId) {
+        return dao.getOutcomeRequests(userId);
+
     }
 }

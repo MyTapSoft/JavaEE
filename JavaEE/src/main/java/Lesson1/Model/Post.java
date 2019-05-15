@@ -17,8 +17,8 @@ public class Post extends IdEntity {
     private long views;
 
     @Id
-    @SequenceGenerator(name = "SEQ", sequenceName = "POST_SEQ", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "SEQ")
+    @SequenceGenerator(name = "POST_SEQ", sequenceName = "POST_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "POST_SEQ")
     @Column(name = "POST_ID")
     public long getId() {
         return id;

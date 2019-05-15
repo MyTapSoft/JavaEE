@@ -2,6 +2,7 @@ package Lesson1.Controller;
 
 
 import Lesson1.Exceptions.BadRequestException;
+import Lesson1.Exceptions.UnauthorizedException;
 import Lesson1.JsonParser.JsonParser;
 import Lesson1.Model.User;
 import Lesson1.Service.UserService;
@@ -29,7 +30,7 @@ public class UserController {
         this.jsonParser = jsonParser;
     }
 
-//    @RequestMapping(method = RequestMethod.POST, value = "/saveUser")
+    //    @RequestMapping(method = RequestMethod.POST, value = "/saveUser")
 //    public String createUser(HttpServletRequest req, Model model) {
 //        try {
 //            userService.saveUser(jsonParser.jsonToObject(req, User.class));
@@ -43,6 +44,18 @@ public class UserController {
 //
 //        return "home";
 //    }
+
+    @RequestMapping(path = "/registerUser", method = RequestMethod.POST)
+    public ResponseEntity<String> registerUser(@ModelAttribute User user) {
+        try {
+            userService.saveUser(user);
+        } catch (BadRequestException duplicateExc) {
+            return new ResponseEntity<>(duplicateExc.getMessage(), HttpStatus.CONFLICT);
+        } catch (Exception otherExc) {
+            return new ResponseEntity<>(otherExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>("User Saved Successfully", HttpStatus.OK);
+    }
 
     @RequestMapping(method = RequestMethod.POST, value = "/updateUser")
     public String updateUser(HttpServletRequest req, Model model) {
@@ -96,21 +109,6 @@ public class UserController {
         return "home";
     }
 
-    @RequestMapping(path = "/registerUser", method = RequestMethod.POST)
-    public ResponseEntity<String> registerUser(@ModelAttribute User user) {
-        try {
-            System.out.println("UserController");
-            userService.saveUser(user);
-        } catch (BadRequestException duplicateExc) {
-            System.out.println(duplicateExc);
-            return new ResponseEntity<>(duplicateExc.getMessage(), HttpStatus.CONFLICT);
-        } catch (Exception otherExc) {
-            System.out.println(otherExc);
-            return new ResponseEntity<>(otherExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return new ResponseEntity<>("User Saved Successfully", HttpStatus.OK);
-    }
-
     @RequestMapping(path = "/login", method = RequestMethod.POST)
     public ResponseEntity<String> loginUser(HttpSession session,
                                             @RequestParam(value = "username") String username,
@@ -160,7 +158,7 @@ public class UserController {
         return "user/all-users";
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/friends")
+    @RequestMapping(method = RequestMethod.GET, path = "/friends")
     public String getUserFriends(Model model, HttpSession session) {
         if (session.getAttribute("loginStatus") == null) {
             model.addAttribute("error", "You have to login first");
@@ -175,6 +173,38 @@ public class UserController {
         return "user/user-friends";
     }
 
+    @RequestMapping(path = "/incomeRequests", method = RequestMethod.GET)
+    public String incomeRequests(HttpSession session, Model model) {
+        try {
+            isUserLogin(session);
+            String userId = String.valueOf(session.getAttribute("userId"));
+            model.addAttribute("success", userService.getIncomeRequests(userId));
+        } catch (UnauthorizedException unauthorized) {
+            model.addAttribute("error", unauthorized);
+            return "401";
+        } catch (Exception otherExc) {
+            model.addAttribute("error", otherExc.getMessage());
+        }
+        return "user-friends";
+
+    }
+
+    @RequestMapping(path = "/outcomeRequests", method = RequestMethod.GET)
+    public String outcomeRequests(HttpSession session, Model model) {
+        try {
+            isUserLogin(session);
+            String userId = String.valueOf(session.getAttribute("userId"));
+            model.addAttribute("success", userService.getOutcomeRequests(userId));
+        } catch (UnauthorizedException unauthorized) {
+            model.addAttribute("error", unauthorized.getMessage());
+            return "401";
+        } catch (Exception otherExc) {
+            model.addAttribute("error", otherExc.getMessage());
+        }
+        return "user-friends";
+
+    }
+
     @RequestMapping(method = RequestMethod.GET, value = "/register-user")
     public String registerUserPage() {
         return "user/user-registration";
@@ -186,4 +216,7 @@ public class UserController {
     }
 
 
+    private void isUserLogin(HttpSession session) throws UnauthorizedException {
+        if (session.getAttribute("loginStatus") == null) throw new UnauthorizedException("You have to login first");
+    }
 }
