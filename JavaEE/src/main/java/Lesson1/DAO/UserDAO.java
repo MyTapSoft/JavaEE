@@ -4,7 +4,6 @@ import Lesson1.Model.Relationship;
 import Lesson1.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -19,24 +18,32 @@ public class UserDAO {
     private GeneralDAO<User> dao;
     @PersistenceContext
     private EntityManager entityManager;
-    private static final String FIND_DUPLICATE_USER = "SELECT * FROM USER1 " +
+    private static final String GET_DUPLICATE_USER = "SELECT * FROM USER1 " +
             "WHERE EMAIL = :userMail OR PHONE_NUMBER = :phoneNumber";
 
-    private static final String LOGIN_USER = "SELECT * FROM USER1 " +
+    private static final String GET_USER = "SELECT * FROM USER1 " +
             "WHERE USER_NAME = :login AND PASSWORD = :password";
 
     private static final String GET_ALL_USERS = "SELECT * FROM USER1";
 
-    private static final String GET_USER_FRIENDS = "SELECT * FROM USER1 " +
-            "LEFT JOIN RELATIONSHIP R " +
-            "ON USER1.USER1_ID = R.USER_ID_FROM OR USER1.USER1_ID = R.USER_ID_TO AND R.STATUS = :statusCode " +
-            "WHERE USER1_ID = :userId";
+    private static final String GET_USER_FRIENDS = "SELECT U.* FROM USER1 U " +
+            "WHERE EXISTS(SELECT * " +
+            "             FROM RELATIONSHIP R " +
+            "             WHERE R.STATUS = :status AND " +
+            "                   (R.USER_ID_FROM = :userId AND R.USER_ID_TO = U.USER1_ID) " +
+            "                OR (R.USER_ID_TO = :userId AND R.USER_ID_FROM= U.USER1_ID))";
 
-    private static final String INCOME_USER_REQUESTS = "SELECT * FROM USER1 LEFT JOIN RELATIONSHIP R " +
-            "ON USER1.USER1_ID = R.USER_ID_TO AND R.STATUS = :statusCode WHERE USER1_ID = :userId";
+    private static final String INCOME_USER_REQUESTS = "SELECT U.* FROM USER1 U " +
+            "WHERE EXISTS(SELECT * " +
+            "             FROM RELATIONSHIP R " +
+            "             WHERE R.STATUS = :status " +
+            "               AND R.USER_ID_TO = :userId AND R.USER_ID_FROM = U.USER1_ID)";
 
-    private static final String OUTCOME_USER_REQUESTS = "SELECT * FROM USER1 LEFT JOIN RELATIONSHIP R " +
-            "ON USER1.USER1_ID = R.USER_ID_FROM AND R.STATUS = :statusCode WHERE USER1_ID = :userId";
+    private static final String OUTCOME_USER_REQUESTS = "SELECT U.* FROM USER1 U " +
+            "WHERE EXISTS(SELECT * " +
+            "             FROM RELATIONSHIP R " +
+            "             WHERE R.STATUS = :status " +
+            "               AND R.USER_ID_FROM = :userId AND R.USER_ID_TO = U.USER1_ID)";
 
 
     @Autowired
@@ -63,7 +70,7 @@ public class UserDAO {
     }
 
     public User getUser(String login, String password) {
-        return (User) entityManager.createNativeQuery(LOGIN_USER, User.class)
+        return (User) entityManager.createNativeQuery(GET_USER, User.class)
                 .setParameter("login", login)
                 .setParameter("password", password)
                 .getSingleResult();
@@ -78,7 +85,7 @@ public class UserDAO {
     public List<User> getUserFriends(long userId) {
         List<User> list = entityManager.createNativeQuery(GET_USER_FRIENDS, User.class)
                 .setParameter("userId", userId)
-                .setParameter("statusCode", 1)
+                .setParameter("status", 1)
                 .getResultList();
         System.out.println(list);
         return list;
@@ -87,7 +94,7 @@ public class UserDAO {
     public User findUserDuplicate(String userMail, String phoneNumber) {
         try {
             return (User) entityManager.createNativeQuery(
-                    FIND_DUPLICATE_USER, User.class)
+                    GET_DUPLICATE_USER, User.class)
                     .setParameter("userMail", userMail)
                     .setParameter("phoneNumber", phoneNumber)
                     .getSingleResult();
@@ -101,14 +108,14 @@ public class UserDAO {
     public List<User> getIncomeRequests(String userId) {
         return entityManager.createNativeQuery(INCOME_USER_REQUESTS, Relationship.class)
                 .setParameter("userId", userId)
-                .setParameter("statusCode", 0)
+                .setParameter("status", 0)
                 .getResultList();
     }
 
     public List<User> getOutcomeRequests(String userId) {
         return entityManager.createNativeQuery(OUTCOME_USER_REQUESTS, Relationship.class)
                 .setParameter("userId", userId)
-                .setParameter("statusCode", 0)
+                .setParameter("status", 0)
                 .getResultList();
     }
 }
