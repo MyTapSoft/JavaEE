@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "USER1")
+@Table(name = "USERS")
 public class User extends IdEntity {
     private long id;
     private String userName;

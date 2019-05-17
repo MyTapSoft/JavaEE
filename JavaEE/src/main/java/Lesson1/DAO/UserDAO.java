@@ -17,16 +17,16 @@ public class UserDAO {
     private GeneralDAO<User> dao;
     @PersistenceContext
     private EntityManager entityManager;
-    private static final String GET_DUPLICATE_USER = "SELECT * FROM USER1 " +
+    private static final String GET_DUPLICATE_USER = "SELECT * FROM USERS " +
             "WHERE EMAIL = :userMail OR PHONE_NUMBER = :phoneNumber";
 
-    private static final String GET_USER = "SELECT * FROM USER1 " +
+    private static final String GET_USER = "SELECT * FROM USERS " +
             "WHERE USER_NAME = :login AND PASSWORD = :password";
 
     private static final String GET_ALL_USERS = "SELECT * FROM USER1";
 
     private static final String GET_USER_FRIENDS = "SELECT U.* " +
-            "FROM USER1 U" +
+            "FROM USERS U" +
             "         JOIN RELATIONSHIP R ON (U.USER1_ID = R.USER_ID_FROM OR U.USER1_ID = R.USER_ID_TO)" +
             "    AND U.USER1_ID != :userId" +
             " WHERE R.STATUS = :status" +
@@ -34,14 +34,14 @@ public class UserDAO {
             "    OR R.USER_ID_FROM = :userId)";
 
     private static final String INCOME_USER_REQUESTS = "SELECT U.* " +
-            "FROM USER1 U" +
+            "FROM USERS U" +
             "         JOIN RELATIONSHIP R ON (U.USER1_ID = R.USER_ID_FROM OR U.USER1_ID = R.USER_ID_TO)" +
             "    AND U.USER1_ID != :userId " +
             "WHERE R.STATUS = :status" +
             "  AND R.USER_ID_TO = :userId";
 
     private static final String OUTCOME_USER_REQUESTS = "SELECT U.* " +
-            "FROM USER1 U" +
+            "FROM USERS U" +
             "         JOIN RELATIONSHIP R ON (U.USER1_ID = R.USER_ID_FROM OR U.USER1_ID = R.USER_ID_TO)" +
             "    AND U.USER1_ID != :userId " +
             "WHERE R.STATUS = :status" +
