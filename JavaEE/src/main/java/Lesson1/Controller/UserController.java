@@ -178,14 +178,14 @@ public class UserController {
         try {
             isUserLogin(session);
             String userId = String.valueOf(session.getAttribute("userId"));
-            model.addAttribute("success", userService.getIncomeRequests(userId));
+            model.addAttribute("user", userService.getIncomeRequests(userId));
         } catch (UnauthorizedException unauthorized) {
             model.addAttribute("error", unauthorized);
             return "401";
         } catch (Exception otherExc) {
             model.addAttribute("error", otherExc.getMessage());
         }
-        return "user-friends";
+        return "user/user-friends";
 
     }
 
@@ -194,14 +194,14 @@ public class UserController {
         try {
             isUserLogin(session);
             String userId = String.valueOf(session.getAttribute("userId"));
-            model.addAttribute("success", userService.getOutcomeRequests(userId));
+            model.addAttribute("user", userService.getOutcomeRequests(userId));
         } catch (UnauthorizedException unauthorized) {
             model.addAttribute("error", unauthorized.getMessage());
             return "401";
         } catch (Exception otherExc) {
             model.addAttribute("error", otherExc.getMessage());
         }
-        return "user-friends";
+        return "user/user-friends";
 
     }
 

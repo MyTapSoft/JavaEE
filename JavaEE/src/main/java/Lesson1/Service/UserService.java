@@ -3,7 +3,6 @@ package Lesson1.Service;
 
 import Lesson1.DAO.UserDAO;
 import Lesson1.Exceptions.BadRequestException;
-import Lesson1.Model.Relationship;
 import Lesson1.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

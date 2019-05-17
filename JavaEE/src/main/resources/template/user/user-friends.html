@@ -31,7 +31,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:if="${user.empty}">
+    <tr th:if="${user == null}">
         <td colspan="2"> No Friends Yet </td>
     </tr>
     <tr th:each="user : ${user}">

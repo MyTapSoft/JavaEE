@@ -1,7 +1,11 @@
 package Lesson1.Test;
 
-public class main {
+
+public class main  {
+
     public static void main(String[] args) {
+
+
 //        DAO<User> userDAO = new DAO<>();
 //        DAO<Post> postDAO = new DAO<>();
 //

@@ -1,6 +1,5 @@
 package Lesson1.DAO;
 
-import Lesson1.Model.Relationship;
 import Lesson1.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -33,17 +32,21 @@ public class UserDAO {
             "                   (R.USER_ID_FROM = :userId AND R.USER_ID_TO = U.USER1_ID) " +
             "                OR (R.USER_ID_TO = :userId AND R.USER_ID_FROM= U.USER1_ID))";
 
-    private static final String INCOME_USER_REQUESTS = "SELECT U.* FROM USER1 U " +
-            "WHERE EXISTS(SELECT * " +
-            "             FROM RELATIONSHIP R " +
-            "             WHERE R.STATUS = :status " +
-            "               AND R.USER_ID_TO = :userId AND R.USER_ID_FROM = U.USER1_ID)";
+    private static final String INCOME_USER_REQUESTS = "SELECT U.*" +
+            "       FROM USER1 U" +
+            "       WHERE EXISTS(SELECT *" +
+            "                   FROM RELATIONSHIP R" +
+            "                   WHERE R.STATUS = :status" +
+            "                     AND R.USER_ID_TO = :userId" +
+            "                     AND R.USER_ID_FROM = U.USER1_ID)";
 
-    private static final String OUTCOME_USER_REQUESTS = "SELECT U.* FROM USER1 U " +
-            "WHERE EXISTS(SELECT * " +
-            "             FROM RELATIONSHIP R " +
-            "             WHERE R.STATUS = :status " +
-            "               AND R.USER_ID_FROM = :userId AND R.USER_ID_TO = U.USER1_ID)";
+    private static final String OUTCOME_USER_REQUESTS = "SELECT U.* " +
+            "FROM USER1 U " +
+            "WHERE EXISTS(SELECT *" +
+            "             FROM RELATIONSHIP R" +
+            "             WHERE R.STATUS = :status" +
+            "               AND R.USER_ID_FROM = :userId" +
+            "               AND R.USER_ID_TO = U.USER1_ID)";
 
 
     @Autowired
@@ -77,9 +80,9 @@ public class UserDAO {
     }
 
     public List<User> getAllUsers() {
-        List<User> list = entityManager.createNativeQuery(GET_ALL_USERS, User.class)
+        return entityManager.createNamedQuery(GET_ALL_USERS, User.class)
                 .getResultList();
-        return list;
+
     }
 
     public List<User> getUserFriends(long userId) {
@@ -106,14 +109,14 @@ public class UserDAO {
 
 
     public List<User> getIncomeRequests(String userId) {
-        return entityManager.createNativeQuery(INCOME_USER_REQUESTS, Relationship.class)
+        return entityManager.createNativeQuery(INCOME_USER_REQUESTS, User.class)
                 .setParameter("userId", userId)
                 .setParameter("status", 0)
                 .getResultList();
     }
 
     public List<User> getOutcomeRequests(String userId) {
-        return entityManager.createNativeQuery(OUTCOME_USER_REQUESTS, Relationship.class)
+        return entityManager.createNativeQuery(OUTCOME_USER_REQUESTS, User.class)
                 .setParameter("userId", userId)
                 .setParameter("status", 0)
                 .getResultList();
