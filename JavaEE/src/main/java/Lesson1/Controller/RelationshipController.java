@@ -1,6 +1,7 @@
 package Lesson1.Controller;
 
 import Lesson1.Exceptions.BadRequestException;
+import Lesson1.Exceptions.InternalServerException;
 import Lesson1.Exceptions.UnauthorizedException;
 import Lesson1.Service.RelationshipService;
 import javassist.bytecode.DuplicateMemberException;
@@ -37,10 +38,7 @@ public class RelationshipController {
         } catch (UnauthorizedException unauthorized) {
             return new ResponseEntity<>(unauthorized.getMessage(), HttpStatus.UNAUTHORIZED);
 
-        }catch (DuplicateMemberException duplicate){
-            return new ResponseEntity<>(duplicate.getMessage(), HttpStatus.CONFLICT);
-        }
-        catch (Exception otherError) {
+        } catch (Exception otherError) {
             return new ResponseEntity<>(otherError.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -51,7 +49,6 @@ public class RelationshipController {
     public ResponseEntity<String> updateRelationship(HttpSession session,
                                                      @RequestParam(value = "userIdTo") String userIdTo,
                                                      @RequestParam(value = "status") String status) {
-
         try {
             isUserLogin(session);
             String userIdFrom = (String) session.getAttribute("userId");
@@ -60,6 +57,8 @@ public class RelationshipController {
             return new ResponseEntity<>(badRequest.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (UnauthorizedException unauthorized) {
             return new ResponseEntity<>(unauthorized.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (InternalServerException internalServerExc) {
+            return new ResponseEntity<>(internalServerExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (Exception otherError) {
             return new ResponseEntity<>(otherError.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }

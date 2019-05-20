@@ -9,7 +9,7 @@ import java.util.Objects;
 public class Relationship implements Serializable {
     private long userIdFrom;
     private long userIdTo;
-    private short status;
+    private RelationshipStatus status;
 
     @Id
     @Column(name = "USER_ID_FROM")
@@ -31,12 +31,12 @@ public class Relationship implements Serializable {
         this.userIdTo = userIdTo;
     }
 
-    @Column(name = "STATUS")//	0 - Pending, 1 - Accepted, 2 - Declined, 3 - Deleted
-    public short getStatus() {
+    @Column(name = "STATUS")
+    public RelationshipStatus getStatus() {
         return status;
     }
 
-    public void setStatus(short status) {
+    public void setStatus(RelationshipStatus status) {
         this.status = status;
     }
 

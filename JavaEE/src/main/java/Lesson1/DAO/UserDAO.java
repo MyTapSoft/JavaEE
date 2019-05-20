@@ -23,7 +23,7 @@ public class UserDAO {
     private static final String GET_USER = "SELECT * FROM USERS " +
             "WHERE USER_NAME = :login AND PASSWORD = :password";
 
-    private static final String GET_ALL_USERS = "SELECT * FROM USER1";
+    private static final String GET_ALL_USERS = "SELECT * FROM USERS";
 
     private static final String GET_USER_FRIENDS = "SELECT U.* " +
             "FROM USERS U" +
