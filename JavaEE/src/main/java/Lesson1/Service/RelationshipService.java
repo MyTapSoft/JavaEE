@@ -33,7 +33,7 @@ public class RelationshipService {
 
     public Relationship updateRelationship(String userIdFrom, String userIdTo, String status) throws BadRequestException, InternalServerException {
 
-        Relationship relationship = dao.getRelationship(Long.parseLong(userIdFrom), Long.parseLong(userIdTo));
+        Relationship relationship = getRelationship(userIdFrom, userIdTo);
         if (relationship == null)
             throw new BadRequestException("Relationship doesn't exist");
         RelationshipStatus desiredStatus = statusMapper(status);
@@ -49,6 +49,10 @@ public class RelationshipService {
         relationship.setStatus(desiredStatus);
         return dao.updateRelationship(relationship);
 
+    }
+
+    public Relationship getRelationship(String userIdFrom, String userIdTo) {
+        return dao.getRelationship(Long.parseLong(userIdFrom), Long.parseLong(userIdTo));
     }
 
     private RelationshipStatus statusMapper(String status) throws InternalServerException {

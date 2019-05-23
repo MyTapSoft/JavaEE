@@ -3,6 +3,8 @@ package Lesson1.Controller;
 import Lesson1.Exceptions.BadRequestException;
 import Lesson1.Exceptions.InternalServerException;
 import Lesson1.Exceptions.UnauthorizedException;
+import Lesson1.Model.Relationship;
+import Lesson1.Model.RelationshipStatus;
 import Lesson1.Service.RelationshipService;
 import javassist.bytecode.DuplicateMemberException;
 import org.springframework.beans.factory.annotation.Autowired;
