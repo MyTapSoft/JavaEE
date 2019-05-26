@@ -40,8 +40,36 @@
     </tr>
     </tbody>
 </table>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<label for="userIdTo"><b>ID: </b></label>
+<input type="number" placeholder="Enter ID: " id="userIdTo" required>
 
+<label for="status"><b>Status</b></label>
+<input type="text" placeholder="Enter status" id="status" required>
 
+<button id="btn">Send</button>
+
+<script>
+    $("#btn").on('click', function () {
+        var $userIdTo = $('#userIdTo');
+        var $status = $('#status');
+        $.ajax({
+            type: "POST",
+            url: "/updateRelationship",
+            data: {
+                userIdTo: $userIdTo.val(),
+                status: $status.val()
+            },
+            success: function success(data) {
+                alert("Successfully");
+            },
+            error: function error(data) {
+                alert("Fail");
+            }
+        });
+    });
+
+</script>
 <script src="../../static/js/menu.js"></script>
 
 </body>

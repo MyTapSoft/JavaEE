@@ -18,8 +18,15 @@ public class RelationshipDAO {
     private EntityManager entityManager;
 
 
-    private static final String GET_RELATIONSHIP = "SELECT * FROM RELATIONSHIP WHERE USER_ID_FROM = :idOne " +
-            "OR USER_ID_FROM = :idTwo AND USER_ID_TO = :idOne OR USER_ID_TO = :idTwo";
+    private static final String GET_RELATIONSHIP = "SELECT * \n" +
+            " FROM RELATIONSHIP\n" +
+            " WHERE (USER_ID_FROM = :idOne AND USER_ID_TO = :idTwo)\n" +
+            "  OR (USER_ID_FROM = :idTwo AND USER_ID_TO = :idOne)";
+
+    private static final String DELETE_RELATIONSHIP = "DELETE\n" +
+            " FROM RELATIONSHIP\n" +
+            " WHERE (USER_ID_FROM = :idOne AND USER_ID_TO = :idTwo)\n" +
+            "   OR (USER_ID_FROM = :idTwo AND USER_ID_TO = :idOne)";
 
 
     public Relationship addRelationship(Relationship relationship) {
@@ -28,11 +35,9 @@ public class RelationshipDAO {
     }
 
     public Relationship updateRelationship(Relationship relationship) {
-        relationship = getRelationship(relationship.getUserIdFrom(), relationship.getUserIdTo());
         entityManager.merge(relationship);
         return relationship;
     }
-
 
 
     public Relationship getRelationship(long userOne, long userTwo) {
@@ -47,4 +52,12 @@ public class RelationshipDAO {
 
     }
 
+    public void deleteRelationship(long userOne, long userTwo) {
+        entityManager.createNativeQuery(DELETE_RELATIONSHIP, Relationship.class)
+                .setParameter("idOne", userOne)
+                .setParameter("idTwo", userTwo)
+                .executeUpdate();
+
+
+    }
 }

@@ -23,15 +23,14 @@ public class UserDAO {
     private static final String GET_USER = "SELECT * FROM USERS " +
             "WHERE USER_NAME = :login AND PASSWORD = :password";
 
-    private static final String GET_ALL_USERS = "SELECT * FROM USER1";
+    private static final String GET_ALL_USERS = "SELECT * FROM USERS";
 
-    private static final String GET_USER_FRIENDS = "SELECT U.* " +
-            "FROM USERS U" +
-            "         JOIN RELATIONSHIP R ON (U.USER1_ID = R.USER_ID_FROM OR U.USER1_ID = R.USER_ID_TO)" +
-            "    AND U.USER1_ID != :userId" +
-            " WHERE R.STATUS = :status" +
-            "  AND (R.USER_ID_TO = :userId" +
-            "    OR R.USER_ID_FROM = :userId)";
+    private static final String GET_USER_FRIENDS = "SELECT U.* FROM USERS U " +
+            "JOIN RELATIONSHIP R " +
+            "ON (U.USER1_ID = R.USER_ID_FROM OR U.USER1_ID = R.USER_ID_TO) " +
+            "AND U.USER1_ID != :userId " +
+            "WHERE R.STATUS = :status " +
+            "AND (R.USER_ID_TO = :userId OR R.USER_ID_FROM = :userId)";
 
     private static final String INCOME_USER_REQUESTS = "SELECT U.* " +
             "FROM USERS U" +
@@ -87,9 +86,8 @@ public class UserDAO {
     public List<User> getUserFriends(long userId) {
         List<User> list = entityManager.createNativeQuery(GET_USER_FRIENDS, User.class)
                 .setParameter("userId", userId)
-                .setParameter("status", 1)
+                .setParameter("status", "accepted")
                 .getResultList();
-        System.out.println(list);
         return list;
     }
 
@@ -110,14 +108,14 @@ public class UserDAO {
     public List<User> getIncomeRequests(String userId) {
         return entityManager.createNativeQuery(INCOME_USER_REQUESTS, User.class)
                 .setParameter("userId", userId)
-                .setParameter("status", 0)
+                .setParameter("status", "pending")
                 .getResultList();
     }
 
     public List<User> getOutcomeRequests(String userId) {
         return entityManager.createNativeQuery(OUTCOME_USER_REQUESTS, User.class)
                 .setParameter("userId", userId)
-                .setParameter("status", 0)
+                .setParameter("status", "pending")
                 .getResultList();
     }
 }
