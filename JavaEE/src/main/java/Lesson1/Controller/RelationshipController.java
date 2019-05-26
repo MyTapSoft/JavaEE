@@ -1,7 +1,10 @@
 package Lesson1.Controller;
 
 import Lesson1.Exceptions.BadRequestException;
+import Lesson1.Exceptions.InternalServerException;
 import Lesson1.Exceptions.UnauthorizedException;
+import Lesson1.Model.Relationship;
+import Lesson1.Model.RelationshipStatus;
 import Lesson1.Service.RelationshipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -53,6 +56,8 @@ public class RelationshipController {
             return new ResponseEntity<>(badRequest.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (UnauthorizedException unauthorized) {
             return new ResponseEntity<>(unauthorized.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (InternalServerException internalServerExc) {
+            return new ResponseEntity<>(internalServerExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (Exception otherError) {
             return new ResponseEntity<>(otherError.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
