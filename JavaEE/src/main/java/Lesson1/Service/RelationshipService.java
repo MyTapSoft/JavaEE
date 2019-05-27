@@ -21,13 +21,16 @@ public class RelationshipService {
         long from = Long.parseLong(userIdFrom);
         long to = Long.parseLong(userIdTo);
         if (from == to) throw new BadRequestException("IDs Are Same");
-        if (dao.getRelationship(from, to) != null) throw new BadRequestException("Relationship Already Exist");
+        Relationship relationship = dao.getRelationship(from, to);
+        if (relationship != null && (relationship.getStatus() == RelationshipStatus.deleted || relationship.getStatus() == RelationshipStatus.canceled)) {
+            return updateRelationship(userIdFrom, userIdTo, "pending");
+        }
+        if (relationship != null) throw new BadRequestException("Relationship Already Exist");
         Relationship result = new Relationship();
         result.setUserIdFrom(from);
         result.setUserIdTo(to);
         result.setStatus(RelationshipStatus.pending);
         return dao.addRelationship(result);
-
     }
 
     public Relationship updateRelationship(String userIdFrom, String userIdTo, String status) throws BadRequestException {
@@ -39,7 +42,7 @@ public class RelationshipService {
         RelationshipStatus desiredStatus = RelationshipStatus.valueOf(status);
         if (relationship.getStatus() == desiredStatus)
             throw new BadRequestException("Same status already exist");
-        if (desiredStatus == RelationshipStatus.pending)
+        if (desiredStatus == RelationshipStatus.pending && relationship.getStatus() != RelationshipStatus.deleted && relationship.getStatus() != RelationshipStatus.canceled)
             throw new BadRequestException("Incorrect status");
         if (desiredStatus == RelationshipStatus.decline && relationship.getStatus() != RelationshipStatus.pending)
             throw new BadRequestException("Incorrect status");
@@ -47,14 +50,9 @@ public class RelationshipService {
             throw new BadRequestException("Incorrect status");
         if (desiredStatus == RelationshipStatus.accepted && relationship.getStatus() != RelationshipStatus.pending)
             throw new BadRequestException("Incorrect status");
-        if (desiredStatus == RelationshipStatus.canceled && relationship.getStatus() != RelationshipStatus.pending
-                && relationship.getUserIdFrom() != Long.valueOf(userIdFrom))
+        if (desiredStatus == RelationshipStatus.canceled && relationship.getStatus() != RelationshipStatus.pending)
             throw new BadRequestException("Incorrect status");
 
-        if (desiredStatus == RelationshipStatus.deleted || desiredStatus == RelationshipStatus.canceled) {
-            dao.deleteRelationship(Long.valueOf(userIdFrom), Long.valueOf(userIdTo));
-            return relationship;
-        }
         relationship.setStatus(desiredStatus);
         return dao.updateRelationship(relationship);
 
