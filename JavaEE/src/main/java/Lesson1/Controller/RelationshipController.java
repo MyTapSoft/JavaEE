@@ -2,6 +2,7 @@ package Lesson1.Controller;
 
 import Lesson1.Exceptions.BadRequestException;
 import Lesson1.Exceptions.UnauthorizedException;
+import Lesson1.Model.RelationshipStatus;
 import Lesson1.Service.RelationshipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -48,7 +49,7 @@ public class RelationshipController {
         try {
             isUserLogin(session);
             String userIdFrom = String.valueOf(session.getAttribute("userId"));
-            service.updateRelationship(userIdFrom, userIdTo, status);
+            service.updateRelationship(userIdFrom, userIdTo, RelationshipStatus.valueOf(status));
         } catch (BadRequestException badRequest) {
             return new ResponseEntity<>(badRequest.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (UnauthorizedException unauthorized) {
