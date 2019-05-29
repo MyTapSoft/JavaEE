@@ -1,7 +1,10 @@
 package Lesson1.Model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -10,6 +13,8 @@ public class Relationship implements Serializable {
     private long userIdFrom;
     private long userIdTo;
     private RelationshipStatus status;
+    private Date friendsRequestDate;
+
 
     @Id
     @Column(name = "USER_ID_FROM")
@@ -39,6 +44,16 @@ public class Relationship implements Serializable {
 
     public void setStatus(RelationshipStatus status) {
         this.status = status;
+    }
+
+    @Column(name = "FRIENDS_REQUEST_DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "YYYY-MM-DD HH:mm:ss")
+    public Date getFriendsRequestDate() {
+        return friendsRequestDate;
+    }
+
+    public void setFriendsRequestDate(Date friendsRequestDate) {
+        this.friendsRequestDate = friendsRequestDate;
     }
 
     @Override

@@ -4,8 +4,14 @@ import Lesson1.DAO.RelationshipDAO;
 import Lesson1.Exceptions.BadRequestException;
 import Lesson1.Model.Relationship;
 import Lesson1.Model.RelationshipStatus;
+import Lesson1.Service.ChainOfResponsibility.Chain;
+import Lesson1.Service.ChainOfResponsibility.FriendsAmountChain;
+import Lesson1.Service.ChainOfResponsibility.RequestAmountChain;
+import Lesson1.Service.ChainOfResponsibility.RequestDateChain;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 @Service
 public class RelationshipService {
@@ -22,6 +28,9 @@ public class RelationshipService {
         long to = Long.parseLong(userIdTo);
         if (from == to) throw new BadRequestException("IDs Are Same");
         Relationship relationship = dao.getRelationship(from, to);
+
+
+
         if (relationship != null && (relationship.getStatus() == RelationshipStatus.deleted || relationship.getStatus() == RelationshipStatus.canceled)) {
             return updateRelationship(userIdFrom, userIdTo, RelationshipStatus.pending);
         }
@@ -60,5 +69,17 @@ public class RelationshipService {
 
     public Relationship getRelationship(String userIdFrom, String userIdTo) {
         return dao.getRelationship(Long.parseLong(userIdFrom), Long.parseLong(userIdTo));
+    }
+
+    private short getFriendsAmount(long userId) {
+        return dao.getFriendsAmount(userId);
+    }
+
+    private short getRequestAmount(long userId){
+        return dao.getRequestAmount(userId);
+    }
+
+    private Date getFriendRequestDate(long userIdFrom, long userIdTo){
+        return dao.getFriendRequestDate(userIdFrom, userIdTo);
     }
 }
