@@ -29,7 +29,14 @@ public class RelationshipService {
         if (from == to) throw new BadRequestException("IDs Are Same");
         Relationship relationship = dao.getRelationship(from, to);
 
+        Chain chain = new FriendsAmountChain(getFriendsAmount(from));
+        Chain chain1 = new RequestAmountChain(getRequestAmount(from));
+        Chain chain2 = new RequestDateChain(getFriendRequestDate(from, to));
 
+        chain.setNextChain(chain1);
+        chain1.setNextChain(chain2);
+
+        chain.check();
 
         if (relationship != null && (relationship.getStatus() == RelationshipStatus.deleted || relationship.getStatus() == RelationshipStatus.canceled)) {
             return updateRelationship(userIdFrom, userIdTo, RelationshipStatus.pending);
