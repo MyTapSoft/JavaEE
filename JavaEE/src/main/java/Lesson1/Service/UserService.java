@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 public class UserService {
 
-    private UserDAO dao;
+    private final UserDAO dao;
 
     @Autowired
     public UserService(UserDAO dao) {

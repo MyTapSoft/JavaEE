@@ -21,8 +21,8 @@ import java.io.IOException;
 @Controller
 public class UserController {
 
-    private UserService userService;
-    private JsonParser<User> jsonParser;
+    private final UserService userService;
+    private final JsonParser<User> jsonParser;
 
     @Autowired
     public UserController(UserService userService, JsonParser<User> jsonParser) {

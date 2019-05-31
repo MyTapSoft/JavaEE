@@ -10,7 +10,7 @@ import javax.persistence.EntityExistsException;
 @Service
 public class PostService {
 
-    private PostDAO dao;
+    private final PostDAO dao;
 
     @Autowired
     public PostService(PostDAO dao) {

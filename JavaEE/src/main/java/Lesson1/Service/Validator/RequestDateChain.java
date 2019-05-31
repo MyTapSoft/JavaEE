@@ -1,4 +1,4 @@
-package Lesson1.Service.ChainOfResponsibility;
+package Lesson1.Service.Validator;
 
 import Lesson1.Exceptions.BadRequestException;
 import Lesson1.Model.RelationshipStatus;
@@ -9,7 +9,7 @@ public class RequestDateChain extends Chain {
     private Date requestDate;
 
     public RequestDateChain(RelationshipStatus status, Date requestDate) {
-        this.status = status;
+        this.certainChainStatus = status;
         this.requestDate = requestDate;
     }
 

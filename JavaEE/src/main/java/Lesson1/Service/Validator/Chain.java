@@ -1,4 +1,4 @@
-package Lesson1.Service.ChainOfResponsibility;
+package Lesson1.Service.Validator;
 
 import Lesson1.Exceptions.BadRequestException;
 import Lesson1.Model.RelationshipStatus;
@@ -6,7 +6,7 @@ import Lesson1.Model.RelationshipStatus;
 
 public abstract class Chain {
     private Chain nextChain;
-    protected RelationshipStatus status;
+    protected RelationshipStatus certainChainStatus;
 
     public Chain setNextChain(Chain nextChain) {
         this.nextChain = nextChain;
@@ -14,10 +14,10 @@ public abstract class Chain {
     }
 
 
-    public void start(RelationshipStatus status) throws BadRequestException {
-        if (this.status == status) check();
+    public void start(RelationshipStatus desiredStatus) throws BadRequestException {
+        if (this.certainChainStatus == desiredStatus) check();
         if (nextChain != null)
-            nextChain.start(status);
+            nextChain.start(desiredStatus);
     }
 
     public abstract void check() throws BadRequestException;

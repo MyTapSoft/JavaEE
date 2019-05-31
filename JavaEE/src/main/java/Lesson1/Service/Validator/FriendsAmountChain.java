@@ -1,4 +1,4 @@
-package Lesson1.Service.ChainOfResponsibility;
+package Lesson1.Service.Validator;
 
 import Lesson1.Exceptions.BadRequestException;
 import Lesson1.Model.RelationshipStatus;
@@ -7,7 +7,7 @@ public class FriendsAmountChain extends Chain {
     private int friendsAmount;
 
     public FriendsAmountChain(RelationshipStatus status, int friendsAmount) {
-        this.status = status;
+        this.certainChainStatus = status;
         this.friendsAmount = friendsAmount;
 
     }

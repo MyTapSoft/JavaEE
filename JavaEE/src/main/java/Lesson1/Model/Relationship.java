@@ -76,7 +76,7 @@ public class Relationship implements Serializable {
         return "Relationship{" +
                 "userIdFrom=" + userIdFrom +
                 ", userIdTo=" + userIdTo +
-                ", status=" + status +
+                ", certainChainStatus=" + status +
                 '}';
     }
 

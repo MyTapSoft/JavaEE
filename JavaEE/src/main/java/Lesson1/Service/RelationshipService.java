@@ -4,10 +4,7 @@ import Lesson1.DAO.RelationshipDAO;
 import Lesson1.Exceptions.BadRequestException;
 import Lesson1.Model.Relationship;
 import Lesson1.Model.RelationshipStatus;
-import Lesson1.Service.ChainOfResponsibility.Chain;
-import Lesson1.Service.ChainOfResponsibility.FriendsAmountChain;
-import Lesson1.Service.ChainOfResponsibility.RequestAmountChain;
-import Lesson1.Service.ChainOfResponsibility.RequestDateChain;
+import Lesson1.Service.Validator.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +12,7 @@ import java.util.Date;
 
 @Service
 public class RelationshipService {
-    private RelationshipDAO dao;
+    private final RelationshipDAO dao;
 
     @Autowired
     public RelationshipService(RelationshipDAO dao) {
@@ -26,9 +23,8 @@ public class RelationshipService {
     public Relationship addRelationship(String userIdFrom, String userIdTo) throws BadRequestException {
         long from = Long.parseLong(userIdFrom);
         long to = Long.parseLong(userIdTo);
-        if (from == to) throw new BadRequestException("IDs Are Same");
-        Relationship relationship = dao.getRelationship(from, to);
-        validate(RelationshipStatus.pending, userIdFrom, userIdTo);
+        Relationship relationship =  validate(RelationshipStatus.pending, userIdFrom, userIdTo);
+
         if (relationship != null && (relationship.getStatus() == RelationshipStatus.deleted || relationship.getStatus() == RelationshipStatus.canceled)) {
             return updateRelationship(userIdFrom, userIdTo, RelationshipStatus.pending);
         }
@@ -41,35 +37,14 @@ public class RelationshipService {
     }
 
     public Relationship updateRelationship(String userIdFrom, String userIdTo, RelationshipStatus status) throws BadRequestException {
-
-        Relationship relationship = getRelationship(userIdFrom, userIdTo);
-
-        if (relationship == null)
-            throw new BadRequestException("Relationship doesn't exist");
-
-        if (relationship.getStatus() == status)
-            throw new BadRequestException("Same status already exist");
-        if (status == RelationshipStatus.pending && relationship.getStatus() != RelationshipStatus.deleted && relationship.getStatus() != RelationshipStatus.canceled)
-            throw new BadRequestException("Incorrect status");
-        if (status == RelationshipStatus.decline && relationship.getStatus() != RelationshipStatus.pending)
-            throw new BadRequestException("Incorrect status");
-        if (status == RelationshipStatus.deleted) {
-            if (relationship.getStatus() != RelationshipStatus.accepted)
-                throw new BadRequestException("Incorrect status");
-            validate(RelationshipStatus.deleted, userIdFrom, userIdTo);
-
-        }
-        if (status == RelationshipStatus.accepted && relationship.getStatus() != RelationshipStatus.pending)
-            throw new BadRequestException("Incorrect status");
-        if (status == RelationshipStatus.canceled && relationship.getStatus() != RelationshipStatus.pending)
-            throw new BadRequestException("Incorrect status");
-
-            relationship.setStatus(status);
+        Relationship relationship = validate(status, userIdFrom, userIdTo);
+        if (relationship == null) throw new BadRequestException("Relationship doesn't exist");
+        relationship.setStatus(status);
         return dao.updateRelationship(relationship);
 
     }
 
-    public Relationship getRelationship(String userIdFrom, String userIdTo) {
+    private Relationship getRelationship(String userIdFrom, String userIdTo) {
         return dao.getRelationship(Long.parseLong(userIdFrom), Long.parseLong(userIdTo));
     }
 
@@ -85,17 +60,26 @@ public class RelationshipService {
         return dao.getFriendRequestDate(userIdFrom, userIdTo);
     }
 
-    private void validate(RelationshipStatus status, String userIdOne, String userIdTwo) throws BadRequestException {
-
+    private Relationship validate(RelationshipStatus status, String userIdOne, String userIdTwo) throws BadRequestException {
         long idOne = Long.parseLong(userIdOne);
         long idTwo = Long.parseLong(userIdTwo);
-        Chain chain, chain1, chain2;
+        if (idOne == idTwo) throw new BadRequestException("IDs Are Same");
+
+        Relationship relationship = getRelationship(userIdOne, userIdTwo);
+
+
+        Chain chain, chain1, chain2, chain3, chain4, chain5, chain6, chain7;
 
         chain = new FriendsAmountChain(RelationshipStatus.accepted, getFriendsAmount(idOne));
         chain1 = chain.setNextChain(new RequestDateChain(RelationshipStatus.deleted, getFriendRequestDate(idOne, idTwo)));
         chain2 = chain1.setNextChain(new RequestAmountChain(RelationshipStatus.pending, getRequestAmount(idOne)));
+        chain3 = chain2.setNextChain(new RelationshipStatusAcceptedChain(RelationshipStatus.accepted, relationship.getStatus()));
+        chain4 = chain3.setNextChain(new RelationshipStatusCancelChain(RelationshipStatus.canceled, relationship.getStatus()));
+        chain5 = chain4.setNextChain(new RelationshipStatusDeclineChain(RelationshipStatus.decline, relationship.getStatus()));
+        chain6 = chain5.setNextChain(new RelationshipStatusDeleteChain(RelationshipStatus.deleted, relationship.getStatus()));
+        chain7 = chain6.setNextChain(new RelationshipStatusPendingChain(RelationshipStatus.pending, relationship.getStatus()));
         chain.start(status);
-
+        return relationship;
     }
 
 }

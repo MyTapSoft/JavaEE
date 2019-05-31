@@ -16,7 +16,7 @@ import javax.servlet.http.HttpSession;
 
 @Controller
 public class RelationshipController {
-    private RelationshipService service;
+    private final RelationshipService service;
 
     @Autowired
     public RelationshipController(RelationshipService service) {
@@ -45,7 +45,7 @@ public class RelationshipController {
     @RequestMapping(path = "/updateRelationship", method = RequestMethod.POST)
     public ResponseEntity<String> updateRelationship(HttpSession session,
                                                      @RequestParam(value = "userIdTo") String userIdTo,
-                                                     @RequestParam(value = "status") String status) {
+                                                     @RequestParam(value = "certainChainStatus") String status) {
         try {
             isUserLogin(session);
             String userIdFrom = String.valueOf(session.getAttribute("userId"));

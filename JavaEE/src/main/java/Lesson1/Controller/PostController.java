@@ -15,8 +15,8 @@ import java.io.IOException;
 @Controller
 public class PostController {
 
-    private PostService postService;
-    private JsonParser<Post> jsonParser;
+    private final PostService postService;
+    private final JsonParser<Post> jsonParser;
 
     @Autowired
     public PostController(PostService postService, JsonParser<Post> jsonParser) {
