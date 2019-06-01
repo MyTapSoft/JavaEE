@@ -14,10 +14,10 @@ public abstract class Chain {
     }
 
 
-    public void start(RelationshipStatus desiredStatus) throws BadRequestException {
+    public void validate(RelationshipStatus desiredStatus) throws BadRequestException {
         if (this.certainChainStatus == desiredStatus) check();
         if (nextChain != null)
-            nextChain.start(desiredStatus);
+            nextChain.validate(desiredStatus);
     }
 
     public abstract void check() throws BadRequestException;

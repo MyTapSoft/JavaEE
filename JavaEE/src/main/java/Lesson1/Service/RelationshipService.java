@@ -78,7 +78,7 @@ public class RelationshipService {
         chain5 = chain4.setNextChain(new RelationshipStatusDeclineChain(RelationshipStatus.decline, relationship.getStatus()));
         chain6 = chain5.setNextChain(new RelationshipStatusDeleteChain(RelationshipStatus.deleted, relationship.getStatus()));
         chain7 = chain6.setNextChain(new RelationshipStatusPendingChain(RelationshipStatus.pending, relationship.getStatus()));
-        chain.start(status);
+        chain.validate(status);
         return relationship;
     }
 
