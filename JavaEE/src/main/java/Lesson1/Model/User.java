@@ -22,9 +22,9 @@ public class User extends IdEntity {
 
 
     @Id
-    @SequenceGenerator(name = "USER1_SEQ", sequenceName = "USER1_SEQ", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "USER1_SEQ")
-    @Column(name = "USER1_ID")
+    @SequenceGenerator(name = "SEQ", sequenceName = "USER_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "SEQ")
+    @Column(name = "USER_ID")
     public long getId() {
         return id;
     }
@@ -79,7 +79,7 @@ public class User extends IdEntity {
         this.birthDate = birthDate;
     }
 
-    @OneToMany(targetEntity = Post.class, mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = Post.class, mappedBy = "userPosted", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference
     public List<Post> getPosts() {
         return posts;
@@ -105,9 +105,10 @@ public class User extends IdEntity {
                 ", userName='" + userName + '\'' +
                 ", realName='" + realName + '\'' +
                 ", email='" + email + '\'' +
-                ", phoneNumber=" + phoneNumber +
+                ", phoneNumber='" + phoneNumber + '\'' +
                 ", birthDate=" + birthDate +
-                ", posts=" + posts.size() +
+                ", posts=" + posts +
+                ", password='" + password + '\'' +
                 '}';
     }
 }

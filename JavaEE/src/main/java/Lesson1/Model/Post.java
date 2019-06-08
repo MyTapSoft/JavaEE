@@ -1,20 +1,22 @@
 package Lesson1.Model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "POST")
 public class Post extends IdEntity {
     private long id;
-    private String title;
-    private String body;
-    private Date publishDate;
-    private User user;
-    private long views;
+    private String message;
+    private Date datePosted;
+    private String location;
+    private List<User> usersTagged = new ArrayList<>();
+    private User userPosted;
+    private User userPagePosted;
 
     @Id
     @SequenceGenerator(name = "POST_SEQ", sequenceName = "POST_SEQ", allocationSize = 1)
@@ -28,63 +30,82 @@ public class Post extends IdEntity {
         this.id = id;
     }
 
-    @Column(name = "TITLE")
-    public String getTitle() {
-        return title;
+    @Column(name = "MESSAGE")
+    public String getMessage() {
+        return message;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    @Column(name = "BODY")
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
-
-    @Column(name = "PUBLISH_DATE")
+    @Column(name = "DATE_POSTED")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "YYYY-MM-DD HH:mm:ss")
-    public Date getPublishDate() {
-        return publishDate;
+    public Date getDatePosted() {
+        return datePosted;
     }
 
-    public void setPublishDate(Date publishDate) {
-        this.publishDate = publishDate;
+    public void setDatePosted(Date datePosted) {
+        this.datePosted = datePosted;
+    }
+
+    @Column(name = "LOCATION")
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "USERS_POST",
+            joinColumns = { @JoinColumn(name = "USER_ID") },
+            inverseJoinColumns = { @JoinColumn(name = "POST_ID") }
+    )
+    @Column(name = "USERS_TAGGED")
+    public List<User> getUsersTagged() {
+        return usersTagged;
+    }
+
+    public void setUsersTagged(List<User> usersTagged) {
+        this.usersTagged = usersTagged;
     }
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "USER_ID")
-    @JsonBackReference
-    public User getUser() {
-        return user;
+    public User getUserPosted() {
+        return userPosted;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserPosted(User userPosted) {
+        this.userPosted = userPosted;
     }
 
-    @Column(name = "VIEWS")
-    public long getViews() {
-        return views;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "USERS_POST",
+            joinColumns = { @JoinColumn(name = "USER_ID") },
+            inverseJoinColumns = { @JoinColumn(name = "POST_ID") }
+    )
+    public User getUserPagePosted() {
+        return userPagePosted;
     }
 
-    public void setViews(long views) {
-        this.views = views;
+    public void setUserPagePosted(User userPagePosted) {
+        this.userPagePosted = userPagePosted;
     }
 
     @Override
     public String toString() {
         return "Post{" +
                 "id=" + id +
-                ", title='" + title + '\'' +
-                ", body='" + body + '\'' +
-                ", publishDate=" + publishDate +
-                ", user=" + user +
-                ", views=" + views +
+                ", message='" + message + '\'' +
+                ", datePosted=" + datePosted +
+                ", location='" + location + '\'' +
+                ", usersTagged=" + usersTagged.size() +
+                ", userPosted=" + userPosted.getId() +
+                ", userPagePosted=" + userPagePosted.getId() +
                 '}';
     }
 }
