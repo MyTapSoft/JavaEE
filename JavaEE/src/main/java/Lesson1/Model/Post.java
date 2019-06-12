@@ -1,5 +1,6 @@
 package Lesson1.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.*;
@@ -58,11 +59,11 @@ public class Post extends IdEntity {
         this.location = location;
     }
 
-    @ManyToMany(cascade = { CascadeType.ALL })
+    @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(
             name = "USERS_POST",
-            joinColumns = { @JoinColumn(name = "USER_ID") },
-            inverseJoinColumns = { @JoinColumn(name = "POST_ID") }
+            joinColumns = {@JoinColumn(name = "USER_ID")},
+            inverseJoinColumns = {@JoinColumn(name = "POST_ID")}
     )
     @Column(name = "USERS_TAGGED")
     public List<User> getUsersTagged() {
@@ -74,6 +75,8 @@ public class Post extends IdEntity {
     }
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "USER_ID")
+    @JsonBackReference
     public User getUserPosted() {
         return userPosted;
     }
@@ -85,8 +88,8 @@ public class Post extends IdEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(
             name = "USERS_POST",
-            joinColumns = { @JoinColumn(name = "USER_ID") },
-            inverseJoinColumns = { @JoinColumn(name = "POST_ID") }
+            joinColumns = {@JoinColumn(name = "USER_ID")},
+            inverseJoinColumns = {@JoinColumn(name = "POST_ID")}
     )
     public User getUserPagePosted() {
         return userPagePosted;
