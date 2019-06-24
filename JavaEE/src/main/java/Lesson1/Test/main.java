@@ -24,7 +24,6 @@ public class main {
 
 
         GeneralDAO<User> userDAO = new GeneralDAO<>();
-        GeneralDAO<Post> postDAO = new GeneralDAO<>();
 
         User john = new User();
         john.setBirthDate(new Date());
@@ -53,9 +52,9 @@ public class main {
         linda.setUserName("Lindy");
         ArrayList<Post> lindaPosts = new ArrayList<>();
 
-        ArrayList<User> list = new ArrayList<>();
-        list.add(linda);
-        list.add(kay);
+        ArrayList<User> taggedUsers = new ArrayList<>();
+        taggedUsers.add(linda);
+        taggedUsers.add(kay);
 
 
         Post johnPost = new Post();
@@ -64,19 +63,21 @@ public class main {
         johnPost.setMessage("Message");
         johnPost.setUserPosted(john);
         johnPost.setUserPagePosted(linda);
-        johnPost.setUsersTagged(list);
+        johnPost.setUsersTagged(taggedUsers);
 
         Post johnPost1 = new Post();
-        johnPost.setDatePosted(new Date());
-        johnPost.setLocation("NY");
-        johnPost.setMessage("Message");
-        johnPost.setUserPosted(john);
-        johnPost.setUserPagePosted(kay);
-        johnPost.setUsersTagged(list);
+        johnPost1.setDatePosted(new Date());
+        johnPost1.setLocation("NY");
+        johnPost1.setMessage("Message");
+        johnPost1.setUserPosted(john);
+        johnPost1.setUserPagePosted(kay);
+        johnPost1.setUsersTagged(taggedUsers);
 
 
         johnPosts.add(johnPost);
         johnPosts.add(johnPost1);
+        kayPosts.add(johnPost);
+        lindaPosts.add(johnPost1);
 
 
         john.setPosts(johnPosts);
