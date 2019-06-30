@@ -4,9 +4,13 @@ import Lesson1.JsonParser.JsonParser;
 import Lesson1.Model.Post;
 import Lesson1.Service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.persistence.EntityExistsException;
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +31,7 @@ public class PostController {
     @RequestMapping(method = RequestMethod.POST, value = "/savePost")
     public String savePost(HttpServletRequest req, Model model) {
         try {
-            model.addAttribute("post", postService.savePost(jsonParser.jsonToObject(req, Post.class)));
+            model.addAttribute("post", postService.save(jsonParser.jsonToObject(req, Post.class)));
         } catch (IOException IOExc) {
             model.addAttribute("error", "You entered wrong data " + IOExc);
             return "400";
@@ -43,7 +47,7 @@ public class PostController {
     @RequestMapping(method = RequestMethod.POST, value = "/updatePost")
     public String updatePost(HttpServletRequest req, Model model) {
         try {
-            model.addAttribute("post", postService.updatePost(jsonParser.jsonToObject(req, Post.class)));
+            model.addAttribute("post", postService.update(jsonParser.jsonToObject(req, Post.class)));
         } catch (IOException IOExc) {
             model.addAttribute("error", "You entered wrong data " + IOExc);
             return "400";
@@ -62,7 +66,7 @@ public class PostController {
     @RequestMapping(method = RequestMethod.DELETE, value = "/deletePost")
     public String deletePost(HttpServletRequest req, Model model) {
         try {
-            postService.deletePost(jsonParser.jsonToObject(req, Post.class));
+            postService.delete(jsonParser.jsonToObject(req, Post.class));
         } catch (NumberFormatException numberExc) {
             model.addAttribute("error", "You entered wrong data " + numberExc);
             return "400";
@@ -78,9 +82,9 @@ public class PostController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/post/{postId}")
-    public String findPost(Model model, @PathVariable String postId) {
+    public String getPostsById(Model model, @PathVariable String postId) {
         try {
-            model.addAttribute("post", postService.findPost(Long.parseLong(postId)));
+            model.addAttribute("post", postService.getById(Long.parseLong(postId)));
         } catch (NumberFormatException numberExc) {
             model.addAttribute("error", "You entered wrong numbers " + numberExc);
             return "400";
@@ -94,4 +98,5 @@ public class PostController {
 
         return "home";
     }
+
 }

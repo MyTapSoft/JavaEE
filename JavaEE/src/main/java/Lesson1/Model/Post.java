@@ -59,11 +59,11 @@ public class Post extends IdEntity {
         this.location = location;
     }
 
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @JoinTable(
             name = "USERS_POST",
-            joinColumns = {@JoinColumn(name = "USER_ID")},
-            inverseJoinColumns = {@JoinColumn(name = "POST_ID")}
+            joinColumns = {@JoinColumn(name = "POST_ID")},
+            inverseJoinColumns = {@JoinColumn(name = "USER_ID")}
     )
     public List<User> getUsersTagged() {
         return usersTagged;
@@ -73,7 +73,7 @@ public class Post extends IdEntity {
         this.usersTagged = usersTagged;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "USER_POSTED")
     @JsonBackReference
     public User getUserPosted() {
@@ -84,7 +84,7 @@ public class Post extends IdEntity {
         this.userPosted = userPosted;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "USER_PAGE_POSTED")
     @JsonBackReference
     public User getUserPagePosted() {

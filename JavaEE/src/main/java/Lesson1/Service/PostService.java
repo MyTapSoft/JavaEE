@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityExistsException;
+import java.util.List;
 
 @Service
 public class PostService {
@@ -17,22 +18,31 @@ public class PostService {
         this.dao = dao;
     }
 
-    public Post savePost(Post post)  {
+    public Post save(Post post) {
         return dao.savePost(post);
     }
 
-    public void deletePost(Post post) {
+    public void delete(Post post) {
         dao.deletePost(post.getId());
     }
 
-    public Post updatePost(Post post)  {
+    public Post update(Post post) {
         return dao.updatePost(post);
     }
 
-    public Post findPost(long id) {
+    public Post getById(long id) {
         Post result = dao.findPost(id);
         if (result == null) throw new EntityExistsException();
         return result;
 
     }
+
+    public List<Post> getUserAndFriendsPosts(long id) {
+        return dao.getUserAndFriendsPosts(id);
+    }
+
+    public List<Post> getFriendsPosts(long id) {
+        return dao.getFriendsPosts(id);
+    }
+
 }

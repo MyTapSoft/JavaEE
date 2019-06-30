@@ -24,7 +24,6 @@ public class UserService {
         if (dao.findUserDuplicate(user.getEmail(), user.getPhoneNumber()) != null) {
             throw new BadRequestException("Email or Phone Number Already Exist");
         }
-        System.out.println("UserService");
         return dao.saveUser(user);
     }
 

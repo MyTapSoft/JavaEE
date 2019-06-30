@@ -30,21 +30,6 @@ public class UserController {
         this.jsonParser = jsonParser;
     }
 
-    //    @RequestMapping(method = RequestMethod.POST, value = "/saveUser")
-//    public String createUser(HttpServletRequest req, Model model) {
-//        try {
-//            userService.saveUser(jsonParser.jsonToObject(req, User.class));
-//        } catch (IOException IOException) {
-//            model.addAttribute("error", "You entered wrong data " + IOException);
-//            return "400";
-//        } catch (Exception otherExc) {
-//            model.addAttribute("error", otherExc);
-//            return "500";
-//        }
-//
-//        return "home";
-//    }
-
     @RequestMapping(path = "/registerUser", method = RequestMethod.POST)
     public ResponseEntity<String> registerUser(@ModelAttribute User user) {
         try {

@@ -24,6 +24,7 @@ public class main {
 
 
         GeneralDAO<User> userDAO = new GeneralDAO<>();
+        GeneralDAO<Post> postDAO = new GeneralDAO<>();
 
         User john = new User();
         john.setBirthDate(new Date());
@@ -73,22 +74,56 @@ public class main {
         johnPost1.setUserPagePosted(kay);
         johnPost1.setUsersTagged(taggedUsers);
 
+        Post kayPost = new Post();
+        kayPost.setDatePosted(new Date());
+        kayPost.setLocation("LA");
+        kayPost.setMessage("Message to someone");
+        kayPost.setUserPosted(kay);
+        kayPost.setUserPagePosted(john);
+
+        Post kayPost2 = new Post();
+        kayPost2.setDatePosted(new Date());
+        kayPost2.setLocation("LA");
+        kayPost2.setMessage("Message to someone 2");
+        kayPost2.setUserPosted(kay);
+        kayPost2.setUserPagePosted(john);
+
+        Post kayPost3 = new Post();
+        kayPost3.setDatePosted(new Date());
+        kayPost3.setLocation("LA");
+        kayPost3.setMessage("Message to someone 3");
+        kayPost3.setUserPosted(kay);
+        kayPost3.setUserPagePosted(linda);
+        kayPost3.setUsersTagged(taggedUsers);
+
+        Post lindaPost = new Post();
+        lindaPost.setDatePosted(new Date());
+        lindaPost.setLocation("Dallas");
+        lindaPost.setMessage("Message to someone");
+        lindaPost.setUserPosted(linda);
+        lindaPost.setUserPagePosted(kay);
+        lindaPost.setUsersTagged(taggedUsers);
+
 
         johnPosts.add(johnPost);
         johnPosts.add(johnPost1);
-        kayPosts.add(johnPost);
-        lindaPosts.add(johnPost1);
+        kayPosts.add(kayPost);
+        kayPosts.add(kayPost2);
+        kayPosts.add(kayPost3);
+        lindaPosts.add(lindaPost);
 
+
+        userDAO.save(john);
+        userDAO.save(kay);
+        userDAO.save(linda);
 
         john.setPosts(johnPosts);
         kay.setPosts(kayPosts);
         linda.setPosts(lindaPosts);
 
-        userDAO.save(john);
-        userDAO.save(kay);
-        userDAO.save(linda);
-//
-//        System.out.println(john.getPosts().size());
+        userDAO.update(john);
+        userDAO.update(kay);
+        userDAO.update(linda);
 
 
     }

@@ -27,22 +27,22 @@ public class UserDAO {
 
     private static final String GET_USER_FRIENDS = "SELECT U.* FROM USERS U " +
             "JOIN RELATIONSHIP R " +
-            "ON (U.USER1_ID = R.USER_ID_FROM OR U.USER1_ID = R.USER_ID_TO) " +
-            "AND U.USER1_ID != :userId " +
+            "ON (U.USER_ID = R.USER_ID_FROM OR U.USER_ID = R.USER_ID_TO) " +
+            "AND U.USER_ID != :userId " +
             "WHERE R.STATUS = :status " +
             "AND (R.USER_ID_TO = :userId OR R.USER_ID_FROM = :userId)";
 
     private static final String INCOME_USER_REQUESTS = "SELECT U.* " +
             "FROM USERS U" +
-            "         JOIN RELATIONSHIP R ON (U.USER1_ID = R.USER_ID_FROM OR U.USER1_ID = R.USER_ID_TO)" +
-            "    AND U.USER1_ID != :userId " +
+            "         JOIN RELATIONSHIP R ON (U.USER_ID = R.USER_ID_FROM OR U.USER_ID = R.USER_ID_TO)" +
+            "    AND U.USER_ID != :userId " +
             "WHERE R.STATUS = :status" +
             "  AND R.USER_ID_TO = :userId";
 
     private static final String OUTCOME_USER_REQUESTS = "SELECT U.* " +
             "FROM USERS U" +
-            "         JOIN RELATIONSHIP R ON (U.USER1_ID = R.USER_ID_FROM OR U.USER1_ID = R.USER_ID_TO)" +
-            "    AND U.USER1_ID != :userId " +
+            "         JOIN RELATIONSHIP R ON (U.USER_ID = R.USER_ID_FROM OR U.USER_ID = R.USER_ID_TO)" +
+            "    AND U.USER_ID != :userId " +
             "WHERE R.STATUS = :status" +
             "  AND R.USER_ID_FROM = :userId";
 
