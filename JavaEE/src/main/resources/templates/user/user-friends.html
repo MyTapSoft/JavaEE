@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>Friends</title>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
-    <link rel="stylesheet" href="../../static/css/style.css">
+    <link type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css" rel="stylesheet">
+    <link type="text/css" th:href="@{/css/style.css}" rel="stylesheet">
     <script src="../../static/js/menu.js"></script>
 </head>
 <body>
@@ -14,9 +14,9 @@
 
 <div class="overlay"></div>
 <div class="topnav" id="myTopnav">
-    <a onclick="play()" href="http://localhost8080/home" class="active">Home</a>
-    <a onclick="play()" href="http://localhost8080/user-registration">Account</a>
-    <a onclick="play()" href="http://localhost8080/about">About</a>
+    <a onclick="play()" href="http://localhost:8080/" class="active">Home</a>
+    <a onclick="play()" href="http://localhost:8080/user-registration">Account</a>
+    <a onclick="play()" href="http://localhost:8080/about">About</a>
     <a href="javascript:void(0);" class="icon" onclick="myFunction()">
         <i class="fa fa-bars"></i>
     </a>
@@ -40,7 +40,7 @@
     </tr>
     </tbody>
 </table>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script>
 <label for="userIdTo"><b>ID: </b></label>
 <input type="number" placeholder="Enter ID: " id="userIdTo" required>
 

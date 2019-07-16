@@ -23,7 +23,7 @@ public class RelationshipService {
     public Relationship addRelationship(String userIdFrom, String userIdTo) throws BadRequestException {
         long from = Long.parseLong(userIdFrom);
         long to = Long.parseLong(userIdTo);
-        Relationship relationship =  validate(RelationshipStatus.pending, userIdFrom, userIdTo);
+        Relationship relationship = validate(RelationshipStatus.pending, userIdFrom, userIdTo);
 
         if (relationship != null && (relationship.getStatus() == RelationshipStatus.deleted || relationship.getStatus() == RelationshipStatus.canceled)) {
             return updateRelationship(userIdFrom, userIdTo, RelationshipStatus.pending);
@@ -66,6 +66,7 @@ public class RelationshipService {
         if (idOne == idTwo) throw new BadRequestException("IDs Are Same");
 
         Relationship relationship = getRelationship(userIdOne, userIdTwo);
+        if (relationship == null) return null;
 
 
         Chain chain, chain1, chain2, chain3, chain4, chain5, chain6, chain7;

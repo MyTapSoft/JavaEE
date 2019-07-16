@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+
+    <link type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css"
+          rel="stylesheet">
+    <link type="text/css" th:href="@{/css/style.css}" rel="stylesheet">
+
+
+</head>
+<body>
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+<audio id="onClick" src="../../static/sound/onClick.wav"></audio>
+
+<div class="overlay"></div>
+<div class="topnav" id="myTopnav">
+    <a onclick="play()" href="http://localhost:8080/" class="active">Home</a>
+    <a onclick="play()" href="http://localhost:8080/user-profile/profile.html">Account</a>
+    <a onclick="play()" href="http://localhost:8080/about">About</a>
+    <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+        <i class="fa fa-bars"></i>
+    </a>
+</div>
+
+<div class="terminal">
+    <h1>User Info<span class="errorcode">: </span></h1>
+    <p class="output">ID: <span th:text="${user.id}"></span></p>
+
+    <p class="output">Name: <span th:text="${user.realName}"></span></p>
+
+    <table>
+        <thead>
+        <tr>
+            <th> ID </th>
+            <th> Message </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${user == null}">
+            <td colspan="2"> No Posts Yet </td>
+        </tr>
+        <tr th:each="post : ${user.posts}">
+            <td><span th:text="${post.id}"> ID: </span></td>
+            <td><span th:text="${post.message}"> Message: </span></td>
+        </tr>
+        </tbody>
+    </table>
+    <button id="addFriend">Add Friend</button>
+</div>
+
+
+
+<script>
+    $("#addFriend").on('click', function () {
+        var $userId = [[${user.id}]];
+        $.ajax({
+            type: "POST",
+            url: "/addRelationship",
+            data: {
+                userIdTo: $userId
+            },
+            success: function success() {
+                alert("Your request has been send");
+            },
+            error: function error(data) {
+                alert(data.message);
+            }
+        });
+    });
+
+</script>
+
+</body>
+</html>

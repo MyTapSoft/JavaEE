@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.persistence.EntityExistsException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.List;
 
 @Controller
 public class PostController {
@@ -52,7 +53,7 @@ public class PostController {
             model.addAttribute("error", "You entered wrong data " + IOExc);
             return "400";
         } catch (EntityExistsException emptyExc) {
-            model.addAttribute("error", emptyExc + " It seems post doesn't exist. Nothing to update");
+            model.addAttribute("error", emptyExc + " It seems posts doesn't exist. Nothing to update");
             return "404";
         } catch (Exception otherExc) {
             model.addAttribute("error", otherExc);
@@ -71,7 +72,7 @@ public class PostController {
             model.addAttribute("error", "You entered wrong data " + numberExc);
             return "400";
         } catch (EntityExistsException emptyExc) {
-            model.addAttribute("error", emptyExc + " It seems post doesn't exist. Nothing to delete");
+            model.addAttribute("error", emptyExc + " It seems posts doesn't exist. Nothing to delete");
             return "404";
         } catch (Exception otherExc) {
             model.addAttribute("error", otherExc);
@@ -89,14 +90,26 @@ public class PostController {
             model.addAttribute("error", "You entered wrong numbers " + numberExc);
             return "400";
         } catch (EntityExistsException emptyExc) {
-            model.addAttribute("error", emptyExc + " It seems there's no post with ID: " + postId);
+            model.addAttribute("error", emptyExc + " It seems there's no posts with ID: " + postId);
             return "404";
         } catch (Exception otherExc) {
             model.addAttribute("error", otherExc);
             return "500";
         }
 
-        return "home";
+        return "posts/post";
+    }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/getBasicPosts")
+    public ResponseEntity<Object> registerUser(Model model, String userId) {
+        List<Post> postList;
+        try {
+            postList = postService.getUserAndFriendsPosts(Long.valueOf(userId));
+            model.addAttribute("posts", postList);
+        } catch (Exception otherExc) {
+            return new ResponseEntity<>(otherExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(postList, HttpStatus.OK);
     }
 
 }

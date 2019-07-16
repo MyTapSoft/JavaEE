@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home Page</title>
+
+<!--        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">-->
+<!--        <link rel="stylesheet" href="../static/css/style.css">-->
+<!--        <script src="../static/js/menu.js"></script>-->
+
+    <link type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css" rel="stylesheet">
+    <link type="text/css" th:href="@{/css/style.css}" rel="stylesheet">
+    <script th:src="@{/js/menu.js}"></script>
+
+</head>
+<body>
+
+<audio id="onClick" src="../static/sound/onClick.wav"></audio>
+
+<div class="overlay"></div>
+<div class="topnav" id="myTopnav">
+    <a onclick="play()" href="http://localhost:8080/" class="active">Home</a>
+    <a onclick="play()" href="http://localhost:8080/user-profile">Account</a>
+    <a onclick="play()" href="http://localhost:8080/about">About</a>
+    <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+        <i class="fa fa-bars"></i>
+    </a>
+</div>
+
+</body>
+
+</html>

@@ -4,6 +4,7 @@ package Lesson1.Controller;
 import Lesson1.Exceptions.BadRequestException;
 import Lesson1.Exceptions.UnauthorizedException;
 import Lesson1.JsonParser.JsonParser;
+import Lesson1.Model.Post;
 import Lesson1.Model.User;
 import Lesson1.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import javax.persistence.EntityExistsException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class UserController {
@@ -63,7 +66,11 @@ public class UserController {
     @RequestMapping(method = RequestMethod.GET, value = "/user/{userId}")
     public String getUser(Model model, @PathVariable String userId) {
         try {
-            model.addAttribute("user", userService.getUser(Long.valueOf(userId)));
+            User user = userService.getUser(Long.valueOf(userId));
+            for (Post post : user.getPosts()) {
+                System.out.println(post);
+            }
+            model.addAttribute("user", user);
         } catch (NumberFormatException parseException) {
             model.addAttribute("error", "You entered wrong ID " + parseException);
             return "400";
@@ -74,7 +81,7 @@ public class UserController {
             model.addAttribute("error", otherExc);
             return "500";
         }
-        return "user/user-profile";
+        return "user/profile";
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/deleteUser")
@@ -94,15 +101,16 @@ public class UserController {
         return "home";
     }
 
-    @RequestMapping(path = "/login", method = RequestMethod.POST)
-    public ResponseEntity<String> loginUser(HttpSession session,
+    @RequestMapping(method = RequestMethod.POST, path = "/login")
+    public ResponseEntity<Object> loginUser(HttpSession session,
                                             @RequestParam(value = "username") String username,
                                             @RequestParam(value = "password") String password) {
+        User user;
         try {
 
             if (session.getAttribute("loginStatus") != null)
                 return new ResponseEntity<>("User Already Logged in!", HttpStatus.BAD_REQUEST);
-            User user = userService.login(username, password);
+             user = userService.login(username, password);
             session.setAttribute("loginStatus", "true");
             session.setAttribute("userId", user.getId());
             session.setAttribute("userName", user.getUserName());
@@ -114,24 +122,9 @@ public class UserController {
         } catch (Exception otherExc) {
             return new ResponseEntity<>(otherExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>("Successfully login", HttpStatus.OK);
+        return new ResponseEntity<>(user.getId(), HttpStatus.OK);
     }
 
-    @RequestMapping(path = "/logout", method = RequestMethod.GET)
-    public ResponseEntity<String> logoutUser(HttpSession session) {
-        try {
-            session.removeAttribute("loginStatus");
-            session.removeAttribute("userId");
-            session.removeAttribute("userName");
-            session.removeAttribute("realName");
-            session.removeAttribute("birthDate");
-            session.removeAttribute("userPosts");
-        } catch (Exception otherExc) {
-            return new ResponseEntity<>(otherExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return new ResponseEntity<>("Successfully", HttpStatus.OK);
-
-    }
 
     @RequestMapping(method = RequestMethod.GET, value = "/allUsers")
     public String allUsersPage(Model model) {
@@ -158,7 +151,24 @@ public class UserController {
         return "user/user-friends";
     }
 
-    @RequestMapping(path = "/incomeRequests", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET, path = "/logout")
+    public String logoutUser(Model model, HttpSession session) {
+        try {
+            session.removeAttribute("loginStatus");
+            session.removeAttribute("userId");
+            session.removeAttribute("userName");
+            session.removeAttribute("realName");
+            session.removeAttribute("birthDate");
+            session.removeAttribute("userPosts");
+        } catch (Exception otherExc) {
+            model.addAttribute("error", otherExc.getMessage());
+        }
+        return "home";
+
+    }
+
+
+    @RequestMapping(method = RequestMethod.GET, path = "/incomeRequests")
     public String incomeRequests(HttpSession session, Model model) {
         try {
             isUserLogin(session);
@@ -174,12 +184,13 @@ public class UserController {
 
     }
 
-    @RequestMapping(path = "/outcomeRequests", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET, path = "/outcomeRequests")
     public String outcomeRequests(HttpSession session, Model model) {
         try {
             isUserLogin(session);
             String userId = String.valueOf(session.getAttribute("userId"));
-            model.addAttribute("user", userService.getOutcomeRequests(userId));
+            List<User> usersList = userService.getOutcomeRequests(userId);
+            model.addAttribute("user", usersList);
         } catch (UnauthorizedException unauthorized) {
             model.addAttribute("error", unauthorized.getMessage());
             return "401";
@@ -190,6 +201,11 @@ public class UserController {
 
     }
 
+
+    private void isUserLogin(HttpSession session) throws UnauthorizedException {
+        if (session.getAttribute("loginStatus") == null) throw new UnauthorizedException("You have to login first");
+    }
+
     @RequestMapping(method = RequestMethod.GET, value = "/register-user")
     public String registerUserPage() {
         return "user/user-registration";
@@ -198,10 +214,5 @@ public class UserController {
     @RequestMapping(method = RequestMethod.GET, value = "/login")
     public String loginPage() {
         return "user/user-login";
-    }
-
-
-    private void isUserLogin(HttpSession session) throws UnauthorizedException {
-        if (session.getAttribute("loginStatus") == null) throw new UnauthorizedException("You have to login first");
     }
 }

@@ -34,17 +34,17 @@ public class UserDAO {
 
     private static final String INCOME_USER_REQUESTS = "SELECT U.* " +
             "FROM USERS U" +
-            "         JOIN RELATIONSHIP R ON (U.USER_ID = R.USER_ID_FROM OR U.USER_ID = R.USER_ID_TO)" +
-            "    AND U.USER_ID != :userId " +
-            "WHERE R.STATUS = :status" +
-            "  AND R.USER_ID_TO = :userId";
+            "JOIN RELATIONSHIP R ON (U.USER_ID = R.USER_ID_FROM OR U.USER_ID = R.USER_ID_TO) " +
+            "AND U.USER_ID != :userId " +
+            "WHERE R.STATUS = :status " +
+            "AND R.USER_ID_TO = :userId";
 
     private static final String OUTCOME_USER_REQUESTS = "SELECT U.* " +
             "FROM USERS U" +
-            "         JOIN RELATIONSHIP R ON (U.USER_ID = R.USER_ID_FROM OR U.USER_ID = R.USER_ID_TO)" +
-            "    AND U.USER_ID != :userId " +
-            "WHERE R.STATUS = :status" +
-            "  AND R.USER_ID_FROM = :userId";
+            "JOIN RELATIONSHIP R ON (U.USER_ID = R.USER_ID_FROM OR U.USER_ID = R.USER_ID_TO) " +
+            "AND U.USER_ID != :userId " +
+            "WHERE R.STATUS = :status " +
+            "AND R.USER_ID_FROM = :userId";
 
 
     @Autowired
@@ -118,4 +118,6 @@ public class UserDAO {
                 .setParameter("status", "pending")
                 .getResultList();
     }
+
+
 }
