@@ -11,13 +11,14 @@
     <link type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css" rel="stylesheet">
     <link type="text/css" th:href="@{/css/style.css}" rel="stylesheet">
     <script th:src="@{/js/menu.js}"></script>
+    <div class="overlay"></div>
 
 </head>
 <body>
 
 <audio id="onClick" src="../static/sound/onClick.wav"></audio>
 
-<div class="overlay"></div>
+
 <div class="topnav" id="myTopnav">
     <a onclick="play()" href="http://localhost:8080/" class="active">Home</a>
     <a onclick="play()" href="http://localhost:8080/user-profile">Account</a>

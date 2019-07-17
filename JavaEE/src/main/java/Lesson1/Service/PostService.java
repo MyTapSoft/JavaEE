@@ -45,4 +45,11 @@ public class PostService {
         return dao.getFriendsPosts(id);
     }
 
+    public List<Post> getAllPosts() {
+        return dao.getAllPosts();
+    }
+
+    public List<Post> getUserPosts(long id) {
+        return dao.getUserPosts(id);
+    }
 }

@@ -15,7 +15,10 @@ public class PostDAO {
     private GeneralDAO<Post> dao;
     @PersistenceContext
     private EntityManager entityManager;
-    private static final String GET_USER_POSTS = "SELECT P.*\n" +
+
+    private static final String GET_USER_POSTS = "SELECT * FROM POST WHERE USERS_TAGGED = :userId";
+    private static final String GET_ALL_POSTS = "SELECT * FROM POST";
+    private static final String GET_USER_AND_FRIENDS_POSTS = "SELECT P.*\n" +
             " FROM POST P\n" +
             " WHERE P.USER_POSTED IN (SELECT U.USER_ID\n" +
             "                        FROM USERS U\n" +
@@ -58,7 +61,7 @@ public class PostDAO {
     }
 
     public List<Post> getUserAndFriendsPosts(long userId) {
-        List<Post> list = entityManager.createNativeQuery(GET_USER_POSTS, Post.class)
+        List<Post> list = entityManager.createNativeQuery(GET_USER_AND_FRIENDS_POSTS, Post.class)
                 .setParameter("userId", userId)
                 .getResultList();
         return list;
@@ -70,4 +73,21 @@ public class PostDAO {
                 .getResultList();
         return list;
     }
+    public List<Post> getAllPosts() {
+        List<Post> list = entityManager.createNativeQuery(GET_ALL_POSTS, Post.class)
+                .getResultList();
+        return list;
+    }
+
+    public List<Post> getUserPosts(long userId) {
+        List<Post> list = entityManager.createNativeQuery(GET_USER_POSTS, Post.class)
+                .setParameter("userId", userId)
+                .getResultList();
+        return list;
+    }
+
+
+
+
+
 }
