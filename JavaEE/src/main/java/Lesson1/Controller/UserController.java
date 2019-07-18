@@ -110,7 +110,7 @@ public class UserController {
 
             if (session.getAttribute("loginStatus") != null)
                 return new ResponseEntity<>("User Already Logged in!", HttpStatus.BAD_REQUEST);
-             user = userService.login(username, password);
+            user = userService.login(username, password);
             session.setAttribute("loginStatus", "true");
             session.setAttribute("userId", user.getId());
             session.setAttribute("userName", user.getUserName());

@@ -103,12 +103,9 @@ public class PostController {
 
     @RequestMapping(method = RequestMethod.GET, path = "/getBasicPosts")
     public ResponseEntity<Object> getUSerAndFriendsPosts(String userId) {
-        List<String> postList;
+        List<Post> postList;
         try {
-            JsonParser<Post> jsonParser = new JsonParser<>();
-            postList = jsonParser.objectToJson(postService.getUserAndFriendsPosts(Long.valueOf(userId)));
-        } catch (JsonProcessingException parseExc) {
-            return new ResponseEntity<>(parseExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            postList = postService.getUserAndFriendsPosts(Long.valueOf(userId));
         } catch (Exception otherExc) {
             return new ResponseEntity<>(otherExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -117,13 +114,11 @@ public class PostController {
 
     @RequestMapping(method = RequestMethod.GET, path = "/getAllPosts")
     public ResponseEntity<Object> getAllPosts() {
-        List<String> postList;
+        List<Post> postList;
         try {
-            JsonParser<Post> jsonParser = new JsonParser<>();
-            postList = jsonParser.objectToJson(postService.getAllPosts());
 
-        } catch (JsonProcessingException parseExc) {
-            return new ResponseEntity<>(parseExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            postList = postService.getAllPosts();
+
         } catch (Exception otherExc) {
             return new ResponseEntity<>(otherExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -132,12 +127,9 @@ public class PostController {
 
     @RequestMapping(method = RequestMethod.GET, path = "/getUserPosts")
     public ResponseEntity<Object> getUserPosts(String userId) {
-        List<String> postList;
+        List<Post> postList;
         try {
-            JsonParser<Post> jsonParser = new JsonParser<>();
-            postList = jsonParser.objectToJson(postService.getUserPosts(Long.valueOf(userId)));
-        } catch (JsonProcessingException parseExc) {
-            return new ResponseEntity<>(parseExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            postList = postService.getUserPosts(Long.valueOf(userId));
         } catch (Exception otherExc) {
             return new ResponseEntity<>(otherExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -146,12 +138,9 @@ public class PostController {
 
     @RequestMapping(method = RequestMethod.GET, path = "/getFriendsPosts")
     public ResponseEntity<Object> getFriendsPosts(String userId) {
-        List<String> postList;
+        List<Post> postList;
         try {
-            JsonParser<Post> jsonParser = new JsonParser<>();
-            postList = jsonParser.objectToJson(postService.getFriendsPosts(Long.valueOf(userId)));
-        } catch (JsonProcessingException parseExc) {
-            return new ResponseEntity<>(parseExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            postList = postService.getFriendsPosts(Long.valueOf(userId));
         } catch (Exception otherExc) {
             return new ResponseEntity<>(otherExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
