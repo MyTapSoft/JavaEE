@@ -21,24 +21,15 @@ public class PostDAO {
     private static final String GET_ALL_POSTS = "SELECT * FROM POST";
     private static final String GET_USER_AND_FRIENDS_POSTS = "SELECT P.*\n" +
             " FROM POST P\n" +
-            " WHERE P.USER_POSTED IN (SELECT U.USER_ID\n" +
-            "                        FROM USERS U\n" +
-            "                                 JOIN RELATIONSHIP R\n" +
-            "                                      ON (U.USER_ID = R.USER_ID_FROM OR U.USER_ID = R.USER_ID_TO)\n" +
-            "                        WHERE R.STATUS = :status\n" +
-            "                          AND (R.USER_ID_TO = :userId OR R.USER_ID_FROM = :userId)) " +
-            " ORDER BY P.DATE_POSTED;";
+            "         JOIN USERS U ON P.USER_POSTED = U.USER_ID\n" +
+            " WHERE P.USER_PAGE_POSTED = :userId\n" +
+            " ORDER BY P.DATE_POSTED";
 
 
-    private static final String GET_FRIENDS_POSTS = "SELECT p.*\n" +
-            "FROM POST p\n" +
-            "WHERE p.USER_POSTED IN (SELECT U.USER_ID\n" +
-            "                        FROM USERS U\n" +
-            "                                 JOIN RELATIONSHIP R\n" +
-            "                                      ON (U.USER_ID = R.USER_ID_FROM OR U.USER_ID = R.USER_ID_TO)\n" +
-            "                                          AND U.USER_ID != :userId\n" +
-            "                        WHERE R.STATUS = :status\n" +
-            "                          AND (R.USER_ID_TO = :userId OR R.USER_ID_FROM = :userId))";
+    private static final String GET_FRIENDS_POSTS = "SELECT P.*\n" +
+            "FROM POST P\n" +
+            "         JOIN USERS U ON P.USER_POSTED = U.USER_ID\n" +
+            "WHERE P.USER_PAGE_POSTED != :userId";
 
     @Autowired
     public PostDAO(GeneralDAO<Post> dao) {
