@@ -27,9 +27,10 @@ public class PostDAO {
 
 
     private static final String GET_FRIENDS_POSTS = "SELECT P.*\n" +
-            "FROM POST P\n" +
-            "         JOIN USERS U ON P.USER_POSTED = U.USER_ID\n" +
-            "WHERE P.USER_PAGE_POSTED != :userId";
+            " FROM POST P\n" +
+            "    JOIN USERS U ON P.USER_POSTED = U.USER_ID\n" +
+            " WHERE P.USER_PAGE_POSTED = :userId\n" +
+            "    AND P.USER_POSTED != :userId";
 
     @Autowired
     public PostDAO(GeneralDAO<Post> dao) {
