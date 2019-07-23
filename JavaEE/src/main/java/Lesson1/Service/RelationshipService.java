@@ -48,7 +48,7 @@ public class RelationshipService {
         return dao.getRelationship(Long.parseLong(userIdFrom), Long.parseLong(userIdTo));
     }
 
-    private short getFriendsAmount(long userId) {
+    private long getFriendsAmount(long userId) {
         return dao.getFriendsAmount(userId);
     }
 

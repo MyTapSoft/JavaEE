@@ -4,9 +4,9 @@ import Lesson1.Exceptions.BadRequestException;
 import Lesson1.Model.RelationshipStatus;
 
 public class FriendsAmountChain extends Chain {
-    private int friendsAmount;
+    private long friendsAmount;
 
-    public FriendsAmountChain(RelationshipStatus status, int friendsAmount) {
+    public FriendsAmountChain(RelationshipStatus status, long friendsAmount) {
         this.certainChainStatus = status;
         this.friendsAmount = friendsAmount;
 

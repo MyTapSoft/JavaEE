@@ -19,26 +19,26 @@ public class RelationshipDAO {
     private EntityManager entityManager;
 
 
-    private static final String GET_RELATIONSHIP = "SELECT * \n" +
+    private static final String GET_RELATIONSHIP_BY_IDs = "SELECT * \n" +
             " FROM RELATIONSHIP\n" +
             " WHERE (USER_ID_FROM = :idOne AND USER_ID_TO = :idTwo)\n" +
             "  OR (USER_ID_FROM = :idTwo AND USER_ID_TO = :idOne)";
 
-    private static final String DELETE_RELATIONSHIP = "DELETE\n" +
+    private static final String DELETE_RELATIONSHIP_BY_IDs = "DELETE\n" +
             " FROM RELATIONSHIP\n" +
             " WHERE (USER_ID_FROM = :idOne AND USER_ID_TO = :idTwo)\n" +
             "   OR (USER_ID_FROM = :idTwo AND USER_ID_TO = :idOne)";
 
-    private static final String GET_AMOUNT = "SELECT * \n" +
+    private static final String GET_RELATIONSHIP_BY_STATUS = "SELECT R.*\n" +
+            " FROM RELATIONSHIP R\n" +
+            " WHERE (R.USER_ID_TO = :userId OR R.USER_ID_FROM = :userId)\n" +
+            "  AND STATUS = :status";
+
+    private static final String GET_RELATIONSHIP_BY_IDs_AND_STATUS = "SELECT *\n" +
             " FROM RELATIONSHIP\n" +
             " WHERE STATUS = :status\n" +
-            "    AND (USER_ID_FROM = :userId AND USER_ID_TO = :userId)";
-
-    private static final String GET_RELATIONSHIP_DATE = "SELECT * \n" +
-            " FROM RELATIONSHIP\n" +
-            " WHERE STATUS = :status" +
-            " ((USER_ID_FROM = :idOne AND USER_ID_TO = :idTwo)\n" +
-            "  OR (USER_ID_FROM = :idTwo AND USER_ID_TO = :idOne))";
+            "    AND (USER_ID_FROM = :idOne AND USER_ID_TO = :idTwo)\n" +
+            "   OR (USER_ID_FROM = :idTwo AND USER_ID_TO = :idOne)";
 
 
     public Relationship addRelationship(Relationship relationship) {
@@ -54,7 +54,7 @@ public class RelationshipDAO {
 
     public Relationship getRelationship(long userOne, long userTwo) {
         try {
-            return (Relationship) entityManager.createNativeQuery(GET_RELATIONSHIP, Relationship.class)
+            return (Relationship) entityManager.createNativeQuery(GET_RELATIONSHIP_BY_IDs, Relationship.class)
                     .setParameter("idOne", userOne)
                     .setParameter("idTwo", userTwo)
                     .getSingleResult();
@@ -65,7 +65,7 @@ public class RelationshipDAO {
     }
 
     public void deleteRelationship(long userOne, long userTwo) {
-        entityManager.createNativeQuery(DELETE_RELATIONSHIP, Relationship.class)
+        entityManager.createNativeQuery(DELETE_RELATIONSHIP_BY_IDs, Relationship.class)
                 .setParameter("idOne", userOne)
                 .setParameter("idTwo", userTwo)
                 .executeUpdate();
@@ -73,22 +73,22 @@ public class RelationshipDAO {
 
     }
 
-    public short getFriendsAmount(long userId) {
-        return (short) entityManager.createNativeQuery(GET_AMOUNT, Relationship.class)
+    public long getFriendsAmount(long userId) {
+        return (short) entityManager.createNativeQuery(GET_RELATIONSHIP_BY_STATUS, Relationship.class)
                 .setParameter("userId", userId)
                 .setParameter("status", "accepted")
                 .getResultList().size();
     }
 
     public short getRequestAmount(long userId) {
-        return (short) entityManager.createNativeQuery(GET_AMOUNT, Relationship.class)
+        return (short) entityManager.createNativeQuery(GET_RELATIONSHIP_BY_STATUS, Relationship.class)
                 .setParameter("userId", userId)
                 .setParameter("status", "pending")
                 .getResultList().size();
     }
 
     public Date getFriendRequestDate(long userIdFrom, long userIdTo) {
-        Relationship result = (Relationship) entityManager.createNativeQuery(GET_RELATIONSHIP_DATE, Relationship.class)
+        Relationship result = (Relationship) entityManager.createNativeQuery(GET_RELATIONSHIP_BY_IDs_AND_STATUS, Relationship.class)
                 .setParameter("idOne", userIdFrom)
                 .setParameter("idTwo", userIdTo)
                 .setParameter("status", "accepted")
