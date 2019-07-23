@@ -28,7 +28,9 @@ public class UserDAO {
     private static final String GET_USER_FRIENDS = "SELECT DISTINCT U.*\n" +
             " FROM USERS U\n" +
             "         JOIN RELATIONSHIP R on (U.USER_ID = R.USER_ID_FROM OR U.USER_ID = R.USER_ID_TO)\n" +
-            " WHERE U.USER_ID != :userId AND R.STATUS = :status";
+            " WHERE (R.USER_ID_FROM = :userId OR R.USER_ID_TO = :userId)\n" +
+            "    AND R.STATUS = :status\n" +
+            "    AND U.USER_ID != :userId";
 
     private static final String INCOME_USER_REQUESTS = "SELECT U.*\n" +
             " FROM USERS U\n" +
