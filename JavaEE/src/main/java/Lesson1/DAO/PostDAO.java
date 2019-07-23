@@ -16,7 +16,8 @@ public class PostDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
-    private static final String GET_USER_POSTS = "SELECT * FROM POST WHERE USERS_TAGGED = :userId";
+    private static final String GET_USER_POSTS = "SELECT * FROM POST WHERE USER_POSTED = :userId";
+
     private static final String GET_ALL_POSTS = "SELECT * FROM POST";
     private static final String GET_USER_AND_FRIENDS_POSTS = "SELECT P.*\n" +
             " FROM POST P\n" +
@@ -73,6 +74,7 @@ public class PostDAO {
                 .getResultList();
         return list;
     }
+
     public List<Post> getAllPosts() {
         List<Post> list = entityManager.createNativeQuery(GET_ALL_POSTS, Post.class)
                 .getResultList();
@@ -85,9 +87,6 @@ public class PostDAO {
                 .getResultList();
         return list;
     }
-
-
-
 
 
 }

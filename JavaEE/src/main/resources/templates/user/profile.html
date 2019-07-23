@@ -12,8 +12,6 @@
 </head>
 <body>
 <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
-<audio id="onClick" src="../../static/sound/onClick.wav"></audio>
-
 
 <div class="topnav" id="myTopnav">
     <a onclick="play()" href="http://localhost:8080/" class="active">Home</a>
@@ -24,7 +22,7 @@
     </a>
 </div>
 
-<div class="terminal">
+<div id="test">
     <h1>User Info<span class="errorcode">: </span></h1>
     <p class="output">ID: <span th:text="${user.id}"></span></p>
     <p class="output">Name: <span th:text="${user.realName}"></span></p>
@@ -47,8 +45,6 @@
     </table>
     <button id="addFriend">Add Friend</button>
 </div>
-
-
 
 
 <script>

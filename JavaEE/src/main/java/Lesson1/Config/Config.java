@@ -49,11 +49,22 @@ public class Config implements WebMvcConfigurer {
         return templateResolver;
     }
 
+    @Bean
+    public SpringResourceTemplateResolver templateJsResolver() {
+        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
+        templateResolver.setApplicationContext(applicationContext);
+        templateResolver.setPrefix("classpath:/static/js");
+        templateResolver.setSuffix(".js");
+        return templateResolver;
+    }
+
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/css/**")
                 .addResourceLocations("classpath:/static/css/");
+        registry.addResourceHandler("/js/")
+                .addResourceLocations("/static/js/");
 
     }
 

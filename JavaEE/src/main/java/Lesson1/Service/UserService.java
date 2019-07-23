@@ -31,8 +31,8 @@ public class UserService {
         return dao.updateUser(user);
     }
 
-    public void deleteUser(User user) {
-        dao.deleteUser(user.getId());
+    public void deleteUser(long userId) {
+        dao.deleteUser(userId);
     }
 
     public User getUser(long id) {

@@ -1,5 +1,6 @@
 package Lesson1.JsonParser;
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
 
@@ -9,6 +10,7 @@ import java.io.IOException;
 
 
 @Component
+@Deprecated
 public class JsonParser<T> {
     public T jsonToObject(HttpServletRequest req, Class<T> objClass) throws IOException {
         try (BufferedReader reader = req.getReader()) {

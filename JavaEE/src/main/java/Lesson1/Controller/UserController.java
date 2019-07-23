@@ -3,7 +3,6 @@ package Lesson1.Controller;
 
 import Lesson1.Exceptions.BadRequestException;
 import Lesson1.Exceptions.UnauthorizedException;
-import Lesson1.JsonParser.JsonParser;
 import Lesson1.Model.Post;
 import Lesson1.Model.User;
 import Lesson1.Service.UserService;
@@ -15,22 +14,19 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityExistsException;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class UserController {
 
     private final UserService userService;
-    private final JsonParser<User> jsonParser;
+
 
     @Autowired
-    public UserController(UserService userService, JsonParser<User> jsonParser) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.jsonParser = jsonParser;
+
     }
 
     @RequestMapping(path = "/registerUser", method = RequestMethod.POST)
@@ -45,13 +41,10 @@ public class UserController {
         return new ResponseEntity<>("User Saved Successfully", HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/updateUser")
-    public String updateUser(HttpServletRequest req, Model model) {
+    @RequestMapping(method = RequestMethod.PATCH, value = "/updateUser")
+    public String updateUser(@ModelAttribute User user, Model model) {
         try {
-            userService.updateUser(jsonParser.jsonToObject(req, User.class));
-        } catch (IOException IOException) {
-            model.addAttribute("error", "You entered wrong data " + IOException);
-            return "400";
+            userService.updateUser(user);
         } catch (EntityExistsException emptyEntity) {
             model.addAttribute("error", emptyEntity + " It seems user doesn't exist. Nothing to update");
             return "404";
@@ -85,9 +78,9 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/deleteUser")
-    public String deleteUser(HttpServletRequest req, Model model) {
+    public String deleteUser(@PathVariable String userId, Model model) {
         try {
-            userService.deleteUser(jsonParser.jsonToObject(req, User.class));
+            userService.deleteUser(Long.valueOf(userId));
         } catch (NumberFormatException parseException) {
             model.addAttribute("error", parseException);
             return "400";

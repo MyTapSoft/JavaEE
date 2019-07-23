@@ -22,8 +22,8 @@ public class PostService {
         return dao.savePost(post);
     }
 
-    public void delete(Post post) {
-        dao.deletePost(post.getId());
+    public void delete(long id) {
+        dao.deletePost(id);
     }
 
     public Post update(Post post) {

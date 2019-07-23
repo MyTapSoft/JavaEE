@@ -1,43 +1,37 @@
 package Lesson1.Controller;
 
-import Lesson1.JsonParser.JsonParser;
+
 import Lesson1.Model.Post;
 import Lesson1.Service.PostService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.persistence.EntityExistsException;
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.List;
 
 @Controller
 public class PostController {
 
     private final PostService postService;
-    private final JsonParser<Post> jsonParser;
+
 
     @Autowired
-    public PostController(PostService postService, JsonParser<Post> jsonParser) {
+    public PostController(PostService postService) {
         this.postService = postService;
-        this.jsonParser = jsonParser;
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/savePost")
-    public String savePost(HttpServletRequest req, Model model) {
+    public String savePost(@ModelAttribute Post post, Model model) {
         try {
-            model.addAttribute("post", postService.save(jsonParser.jsonToObject(req, Post.class)));
-        } catch (IOException IOExc) {
-            model.addAttribute("error", "You entered wrong data " + IOExc);
-            return "400";
-        } catch (Exception otherException) {
+            model.addAttribute("post", postService.save(post));
+        }  catch (Exception otherException) {
             model.addAttribute("error", otherException);
             return "500";
         }
@@ -46,13 +40,10 @@ public class PostController {
 
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/updatePost")
-    public String updatePost(HttpServletRequest req, Model model) {
+    @RequestMapping(method = RequestMethod.PATCH, value = "/updatePost")
+    public String updatePost(@ModelAttribute Post post, Model model) {
         try {
-            model.addAttribute("post", postService.update(jsonParser.jsonToObject(req, Post.class)));
-        } catch (IOException IOExc) {
-            model.addAttribute("error", "You entered wrong data " + IOExc);
-            return "400";
+            model.addAttribute("post", postService.update(post));
         } catch (EntityExistsException emptyExc) {
             model.addAttribute("error", emptyExc + " It seems posts doesn't exist. Nothing to update");
             return "404";
@@ -66,9 +57,9 @@ public class PostController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/deletePost")
-    public String deletePost(HttpServletRequest req, Model model) {
+    public String deletePost(@PathVariable String postId, Model model) {
         try {
-            postService.delete(jsonParser.jsonToObject(req, Post.class));
+            postService.delete(Long.valueOf(postId));
         } catch (NumberFormatException numberExc) {
             model.addAttribute("error", "You entered wrong data " + numberExc);
             return "400";
