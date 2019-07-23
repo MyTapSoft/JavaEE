@@ -78,9 +78,11 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/deleteUser")
-    public String deleteUser(@PathVariable String userId, Model model) {
+    public String deleteUser(HttpSession session, Model model) {
         try {
-            userService.deleteUser(Long.valueOf(userId));
+            isUserLogin(session);
+            Long userId = (Long)session.getAttribute("userId");
+            userService.deleteUser(userId);
         } catch (NumberFormatException parseException) {
             model.addAttribute("error", parseException);
             return "400";

@@ -57,7 +57,7 @@ public class PostController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/deletePost")
-    public String deletePost(@PathVariable String postId, Model model) {
+    public String deletePost(String postId, Model model) {
         try {
             postService.delete(Long.valueOf(postId));
         } catch (NumberFormatException numberExc) {
