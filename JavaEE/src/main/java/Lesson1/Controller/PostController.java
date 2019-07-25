@@ -1,6 +1,7 @@
 package Lesson1.Controller;
 
 
+import Lesson1.Exceptions.BadRequestException;
 import Lesson1.Model.Post;
 import Lesson1.Service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +29,12 @@ public class PostController {
 
     @RequestMapping(method = RequestMethod.POST, path = "/savePost")
     public ResponseEntity<Object> savePost(@ModelAttribute Post post) {
+
         Post result = null;
         try {
             result = postService.save(post);
+        } catch (BadRequestException badRequest) {
+            new ResponseEntity<>(badRequest.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception otherException) {
             new ResponseEntity<>(otherException.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -95,7 +99,7 @@ public class PostController {
         try {
             postList = postService.getUserAndFriendsPosts(Long.valueOf(userId));
         } catch (NumberFormatException numberExc) {
-            return new ResponseEntity<>(numberExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(numberExc.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception otherExc) {
             return new ResponseEntity<>(otherExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }

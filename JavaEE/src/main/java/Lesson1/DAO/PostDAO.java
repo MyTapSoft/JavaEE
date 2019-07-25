@@ -32,6 +32,7 @@ public class PostDAO {
             " WHERE P.USER_PAGE_POSTED = :userId\n" +
             "    AND P.USER_POSTED != :userId";
 
+
     @Autowired
     public PostDAO(GeneralDAO<Post> dao) {
         this.dao = dao;
@@ -49,7 +50,7 @@ public class PostDAO {
         dao.delete(id, Post.class);
     }
 
-    public Post findPost(long id) {
+    public Post getPost(long id) {
         return dao.getEntity(id, Post.class);
     }
 
@@ -79,6 +80,7 @@ public class PostDAO {
                 .getResultList();
         return list;
     }
+
 
 
 }
