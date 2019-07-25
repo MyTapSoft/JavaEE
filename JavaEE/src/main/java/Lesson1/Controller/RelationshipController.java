@@ -42,7 +42,7 @@ public class RelationshipController {
         return new ResponseEntity<>("Request Send", HttpStatus.OK);
     }
 
-    @RequestMapping(path = "/updateRelationship", method = RequestMethod.PATCH)
+    @RequestMapping(path = "/updateRelationship", method = RequestMethod.PUT)
     public ResponseEntity<String> updateRelationship(HttpSession session,
                                                      @RequestParam(value = "userIdTo") String userIdTo,
                                                      @RequestParam(value = "certainChainStatus") String status) {

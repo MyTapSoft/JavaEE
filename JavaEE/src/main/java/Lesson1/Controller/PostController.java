@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,76 +26,76 @@ public class PostController {
         this.postService = postService;
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/savePost")
-    public String savePost(@ModelAttribute Post post, Model model) {
+    @RequestMapping(method = RequestMethod.POST, path = "/savePost")
+    public ResponseEntity<Object> savePost(@ModelAttribute Post post) {
+        Post result = null;
         try {
-            model.addAttribute("post", postService.save(post));
-        }  catch (Exception otherException) {
-            model.addAttribute("error", otherException);
-            return "500";
+            result = postService.save(post);
+        } catch (Exception otherException) {
+            new ResponseEntity<>(otherException.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return "home";
+        return new ResponseEntity<>(result, HttpStatus.OK);
 
     }
 
-    @RequestMapping(method = RequestMethod.PATCH, value = "/updatePost")
-    public String updatePost(@ModelAttribute Post post, Model model) {
+    @RequestMapping(method = RequestMethod.PUT, path = "/updatePost")
+    public ResponseEntity<Object> updatePost(@ModelAttribute Post post) {
+        Post result = null;
         try {
-            model.addAttribute("post", postService.update(post));
+            result = postService.update(post);
         } catch (EntityExistsException emptyExc) {
-            model.addAttribute("error", emptyExc + " It seems posts doesn't exist. Nothing to update");
-            return "404";
+            return new ResponseEntity<>(emptyExc, HttpStatus.BAD_REQUEST);
         } catch (Exception otherExc) {
-            model.addAttribute("error", otherExc);
-            return "500";
+            return new ResponseEntity<>(otherExc, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return "home";
+        return new ResponseEntity<>(result, HttpStatus.OK);
 
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "/deletePost")
-    public String deletePost(String postId, Model model) {
+    @RequestMapping(method = RequestMethod.DELETE, path = "/deletePost")
+    public ResponseEntity<Object> deletePost(String postId) {
         try {
             postService.delete(Long.valueOf(postId));
         } catch (NumberFormatException numberExc) {
-            model.addAttribute("error", "You entered wrong data " + numberExc);
-            return "400";
+            return new ResponseEntity<>(numberExc, HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (EntityExistsException emptyExc) {
-            model.addAttribute("error", emptyExc + " It seems posts doesn't exist. Nothing to delete");
-            return "404";
+            return new ResponseEntity<>(emptyExc, HttpStatus.BAD_REQUEST);
         } catch (Exception otherExc) {
-            model.addAttribute("error", otherExc);
-            return "500";
+            return new ResponseEntity<>(otherExc, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return "home";
+        return new ResponseEntity<>("Post with ID" + postId + " has been deleted", HttpStatus.OK);
 
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/post/{postId}")
-    public String getPostsById(Model model, @PathVariable String postId) {
+    @RequestMapping(method = RequestMethod.GET, path = "/post/{postId}")
+    public ResponseEntity<Object> getPostsById(@PathVariable String postId) {
+        Post result = null;
+
         try {
-            model.addAttribute("post", postService.getById(Long.parseLong(postId)));
+            result = postService.getById(Long.parseLong(postId));
         } catch (NumberFormatException numberExc) {
-            model.addAttribute("error", "You entered wrong numbers " + numberExc);
-            return "400";
+            return new ResponseEntity<>(numberExc, HttpStatus.INTERNAL_SERVER_ERROR);
+
         } catch (EntityExistsException emptyExc) {
-            model.addAttribute("error", emptyExc + " It seems there's no posts with ID: " + postId);
-            return "404";
+            return new ResponseEntity<>(emptyExc, HttpStatus.BAD_REQUEST);
+
         } catch (Exception otherExc) {
-            model.addAttribute("error", otherExc);
-            return "500";
+            return new ResponseEntity<>(otherExc, HttpStatus.INTERNAL_SERVER_ERROR);
+
         }
 
-        return "posts/post";
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/getBasicPosts")
-    public ResponseEntity<Object> getUSerAndFriendsPosts(String userId) {
+    public ResponseEntity<Object> getUserAndFriendsPosts(String userId) {
         List<Post> postList;
         try {
             postList = postService.getUserAndFriendsPosts(Long.valueOf(userId));
+        } catch (NumberFormatException numberExc) {
+            return new ResponseEntity<>(numberExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (Exception otherExc) {
             return new ResponseEntity<>(otherExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -107,9 +106,7 @@ public class PostController {
     public ResponseEntity<Object> getAllPosts() {
         List<Post> postList;
         try {
-
             postList = postService.getAllPosts();
-
         } catch (Exception otherExc) {
             return new ResponseEntity<>(otherExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }

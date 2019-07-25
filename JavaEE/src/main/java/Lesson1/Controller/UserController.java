@@ -41,7 +41,7 @@ public class UserController {
         return new ResponseEntity<>("User Saved Successfully", HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.PATCH, value = "/updateUser")
+    @RequestMapping(method = RequestMethod.PUT, value = "/updateUser")
     public String updateUser(@ModelAttribute User user, Model model) {
         try {
             userService.updateUser(user);
