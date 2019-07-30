@@ -58,7 +58,7 @@ public class UserController {
     @RequestMapping(method = RequestMethod.GET, value = "/user/{userId}")
     public String getUser(Model model, @PathVariable String userId) {
         try {
-            User user = userService.getUser(Long.valueOf(userId));
+            User user = userService.getUser(Long.parseLong(userId));
             model.addAttribute("user", user);
         } catch (NumberFormatException parseException) {
             model.addAttribute("error", "You entered wrong ID " + parseException);

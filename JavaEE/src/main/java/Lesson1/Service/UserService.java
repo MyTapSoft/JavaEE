@@ -42,7 +42,6 @@ public class UserService {
     public User getUser(long id) {
         User result = dao.getUser(id);
         if (result == null) throw new EntityExistsException();
-
         return result;
     }
 

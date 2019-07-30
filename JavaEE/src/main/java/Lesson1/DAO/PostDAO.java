@@ -44,6 +44,8 @@ public class PostDAO {
             " ORDER BY P.DATE_POSTED DESC \n" +
             "    OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY;\n";
 
+    private static final int LIMIT = 10;
+
 
     @Autowired
     public PostDAO(GeneralDAO<Post> dao) {
@@ -97,7 +99,7 @@ public class PostDAO {
         List<Post> list = entityManager.createNativeQuery(GET_FEED, Post.class)
                 .setParameter("userId", userId)
                 .setParameter("offset", offset)
-                .setParameter("limit", 5)
+                .setParameter("limit", LIMIT)
                 .setParameter("status", "accepted")
                 .getResultList();
         return list;
