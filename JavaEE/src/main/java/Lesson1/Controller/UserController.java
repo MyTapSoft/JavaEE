@@ -3,7 +3,6 @@ package Lesson1.Controller;
 
 import Lesson1.Exceptions.BadRequestException;
 import Lesson1.Exceptions.UnauthorizedException;
-import Lesson1.Model.Post;
 import Lesson1.Model.User;
 import Lesson1.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +41,9 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/updateUser")
-    public String updateUser(@ModelAttribute User user, Model model) {
+    public String updateUser(@ModelAttribute User user, Model model, HttpSession session) {
         try {
-            userService.updateUser(user);
+            userService.updateUser(user, session);
         } catch (EntityExistsException emptyEntity) {
             model.addAttribute("error", emptyEntity + " It seems user doesn't exist. Nothing to update");
             return "404";
@@ -60,9 +59,6 @@ public class UserController {
     public String getUser(Model model, @PathVariable String userId) {
         try {
             User user = userService.getUser(Long.valueOf(userId));
-            for (Post post : user.getPosts()) {
-                System.out.println(post);
-            }
             model.addAttribute("user", user);
         } catch (NumberFormatException parseException) {
             model.addAttribute("error", "You entered wrong ID " + parseException);
@@ -80,9 +76,9 @@ public class UserController {
     @RequestMapping(method = RequestMethod.DELETE, value = "/deleteUser")
     public String deleteUser(HttpSession session, Model model) {
         try {
-            isUserLogin(session);
-            Long userId = (Long)session.getAttribute("userId");
-            userService.deleteUser(userId);
+
+            Long userId = (Long) session.getAttribute("userId");
+            userService.deleteUser(userId, session);
         } catch (NumberFormatException parseException) {
             model.addAttribute("error", parseException);
             return "400";
@@ -166,9 +162,8 @@ public class UserController {
     @RequestMapping(method = RequestMethod.GET, path = "/incomeRequests")
     public String incomeRequests(HttpSession session, Model model) {
         try {
-            isUserLogin(session);
             String userId = String.valueOf(session.getAttribute("userId"));
-            model.addAttribute("user", userService.getIncomeRequests(userId));
+            model.addAttribute("user", userService.getIncomeRequests(userId, session));
         } catch (UnauthorizedException unauthorized) {
             model.addAttribute("error", unauthorized);
             return "401";
@@ -182,9 +177,8 @@ public class UserController {
     @RequestMapping(method = RequestMethod.GET, path = "/outcomeRequests")
     public String outcomeRequests(HttpSession session, Model model) {
         try {
-            isUserLogin(session);
             String userId = String.valueOf(session.getAttribute("userId"));
-            List<User> usersList = userService.getOutcomeRequests(userId);
+            List<User> usersList = userService.getOutcomeRequests(userId, session);
             model.addAttribute("user", usersList);
         } catch (UnauthorizedException unauthorized) {
             model.addAttribute("error", unauthorized.getMessage());
@@ -197,10 +191,6 @@ public class UserController {
     }
 
 
-    private void isUserLogin(HttpSession session) throws UnauthorizedException {
-        if (session.getAttribute("loginStatus") == null) throw new UnauthorizedException("You have to login first");
-    }
-
     @RequestMapping(method = RequestMethod.GET, value = "/register-user")
     public String registerUserPage() {
         return "user/user-registration";
@@ -210,4 +200,6 @@ public class UserController {
     public String loginPage() {
         return "user/user-login";
     }
+
+
 }

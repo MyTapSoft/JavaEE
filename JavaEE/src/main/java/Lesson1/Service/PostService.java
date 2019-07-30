@@ -60,6 +60,12 @@ public class PostService {
         return dao.getAllPosts();
     }
 
+    public List<Post> getFeed(long userId, short offset) {
+
+        return dao.getFeed(userId, offset);
+    }
+
+
     public List<Post> getUserPosts(long id) {
         return dao.getUserPosts(id);
     }
@@ -69,7 +75,7 @@ public class PostService {
         User userPagePosted = post.getUserPagePosted();
         Relationship isFriends = relationshipDAO.getRelationship(userPosted.getId(), userPagePosted.getId());
         if (isFriends == null || isFriends.getStatus() != RelationshipStatus.accepted)
-            throw new BadRequestException("User's not friend");
+            throw new BadRequestException("User's not a friend");
         if (post.getMessage().replaceAll("\\s+", "").isEmpty()) throw new BadRequestException("Message is empty");
     }
 }

@@ -3,9 +3,10 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Post Page</title>
+    <title>Feed</title>
 
-    <link type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css" rel="stylesheet">
+    <link type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css"
+          rel="stylesheet">
     <link type="text/css" th:href="@{/css/style.css}" rel="stylesheet">
 </head>
 <body>
@@ -22,8 +23,24 @@
     </a>
 </div>
 
-<div class="post">
-    <p th:text="${post}"></p>
+<div id="test">
+    <table>
+        <thead>
+        <tr>
+            <th> ID</th>
+            <th> Message</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${posts == null}">
+            <td colspan="2"> No Posts Yet</td>
+        </tr>
+        <tr th:each="post : ${posts}">
+            <td><span th:text="${post.id}"> ID: </span></td>
+            <td><span th:text="${post.message}"> Message: </span></td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 
 <script src="../../static/js/menu.js"></script>

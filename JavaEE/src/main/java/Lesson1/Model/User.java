@@ -22,8 +22,8 @@ public class User extends IdEntity {
 
 
     @Id
-    @SequenceGenerator(name = "SEQ", sequenceName = "USER_SEQ", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "SEQ")
+    @SequenceGenerator(name = "USER1_SEQ", sequenceName = "USER1_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "USER1_SEQ")
     @Column(name = "USER_ID")
     public long getId() {
         return id;
