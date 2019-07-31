@@ -5,6 +5,7 @@ import Lesson1.Exceptions.BadRequestException;
 import Lesson1.Exceptions.UnauthorizedException;
 import Lesson1.Model.Post;
 import Lesson1.Service.PostService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,8 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final static Logger log = Logger.getLogger(PostController.class);
+
 
 
     @Autowired
@@ -37,8 +40,10 @@ public class PostController {
         try {
             result = postService.save(post);
         } catch (BadRequestException badRequest) {
+            log.error(badRequest);
             new ResponseEntity<>(badRequest.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception otherException) {
+            log.error(otherException);
             new ResponseEntity<>(otherException.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -52,8 +57,10 @@ public class PostController {
         try {
             result = postService.update(post);
         } catch (EntityExistsException emptyExc) {
+            log.error(emptyExc);
             return new ResponseEntity<>(emptyExc, HttpStatus.BAD_REQUEST);
         } catch (Exception otherExc) {
+            log.error(otherExc);
             return new ResponseEntity<>(otherExc, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -64,12 +71,15 @@ public class PostController {
     @RequestMapping(method = RequestMethod.DELETE, path = "/deletePost")
     public ResponseEntity<Object> deletePost(String postId) {
         try {
-            postService.delete(Long.valueOf(postId));
+            postService.delete(Long.parseLong(postId));
         } catch (NumberFormatException numberExc) {
+            log.error(numberExc);
             return new ResponseEntity<>(numberExc, HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (EntityExistsException emptyExc) {
+            log.error(emptyExc);
             return new ResponseEntity<>(emptyExc, HttpStatus.BAD_REQUEST);
         } catch (Exception otherExc) {
+            log.error(otherExc);
             return new ResponseEntity<>(otherExc, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>("Post with ID" + postId + " has been deleted", HttpStatus.OK);
@@ -82,12 +92,15 @@ public class PostController {
         try {
             result = postService.getById(Long.parseLong(postId));
         } catch (NumberFormatException numberExc) {
+            log.error(numberExc);
             return new ResponseEntity<>(numberExc, HttpStatus.INTERNAL_SERVER_ERROR);
 
         } catch (EntityExistsException emptyExc) {
+            log.error(emptyExc);
             return new ResponseEntity<>(emptyExc, HttpStatus.BAD_REQUEST);
 
         } catch (Exception otherExc) {
+            log.error(otherExc);
             return new ResponseEntity<>(otherExc, HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
@@ -99,10 +112,12 @@ public class PostController {
     public ResponseEntity<Object> getUserAndFriendsPosts(String userId) {
         List<Post> postList;
         try {
-            postList = postService.getUserAndFriendsPosts(Long.valueOf(userId));
+            postList = postService.getUserAndFriendsPosts(Long.parseLong(userId));
         } catch (NumberFormatException numberExc) {
+            log.error(numberExc);
             return new ResponseEntity<>(numberExc.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception otherExc) {
+            log.error(otherExc);
             return new ResponseEntity<>(otherExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(postList, HttpStatus.OK);
@@ -114,6 +129,7 @@ public class PostController {
         try {
             postList = postService.getAllPosts();
         } catch (Exception otherExc) {
+            log.error(otherExc);
             return new ResponseEntity<>(otherExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(postList, HttpStatus.OK);
@@ -123,8 +139,9 @@ public class PostController {
     public ResponseEntity<Object> getUserPosts(String userId) {
         List<Post> postList;
         try {
-            postList = postService.getUserPosts(Long.valueOf(userId));
+            postList = postService.getUserPosts(Long.parseLong(userId));
         } catch (Exception otherExc) {
+            log.error(otherExc);
             return new ResponseEntity<>(otherExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(postList, HttpStatus.OK);
@@ -134,8 +151,9 @@ public class PostController {
     public ResponseEntity<Object> getFriendsPosts(String userId) {
         List<Post> postList;
         try {
-            postList = postService.getFriendsPosts(Long.valueOf(userId));
+            postList = postService.getFriendsPosts(Long.parseLong(userId));
         } catch (Exception otherExc) {
+            log.error(otherExc);
             return new ResponseEntity<>(otherExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(postList, HttpStatus.OK);
@@ -146,14 +164,17 @@ public class PostController {
         try {
             if (session.getAttribute("loginStatus") == null) throw new UnauthorizedException("You have to login first");
             Long userId = (Long) session.getAttribute("userId");
-            short offsets = Short.valueOf(offset);
+            short offsets = Short.parseShort(offset);
             model.addAttribute("posts", postService.getFeed(userId, offsets));
         } catch (UnauthorizedException unauthorized) {
+            log.error(unauthorized);
             model.addAttribute("error", unauthorized.getMessage());
             return "401";
         } catch (NumberFormatException numberExc) {
+            log.error(numberExc);
             model.addAttribute("error", numberExc.getMessage());
         } catch (Exception otherExc) {
+            log.error(otherExc);
             model.addAttribute("error", otherExc.getMessage());
         }
         return "posts/feed";

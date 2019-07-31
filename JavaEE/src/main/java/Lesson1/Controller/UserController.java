@@ -5,6 +5,7 @@ import Lesson1.Exceptions.BadRequestException;
 import Lesson1.Exceptions.UnauthorizedException;
 import Lesson1.Model.User;
 import Lesson1.Service.UserService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final static Logger log = Logger.getLogger(UserService.class);
 
 
     @Autowired
@@ -33,8 +35,10 @@ public class UserController {
         try {
             userService.saveUser(user);
         } catch (BadRequestException duplicateExc) {
+            log.error(duplicateExc);
             return new ResponseEntity<>(duplicateExc.getMessage(), HttpStatus.CONFLICT);
         } catch (Exception otherExc) {
+            log.error(otherExc);
             return new ResponseEntity<>(otherExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>("User Saved Successfully", HttpStatus.OK);
@@ -45,9 +49,11 @@ public class UserController {
         try {
             userService.updateUser(user, session);
         } catch (EntityExistsException emptyEntity) {
+            log.error(emptyEntity);
             model.addAttribute("error", emptyEntity + " It seems user doesn't exist. Nothing to update");
             return "404";
         } catch (Exception otherExc) {
+            log.error(otherExc);
             model.addAttribute("error", otherExc);
             return "500";
         }
@@ -61,12 +67,15 @@ public class UserController {
             User user = userService.getUser(Long.parseLong(userId));
             model.addAttribute("user", user);
         } catch (NumberFormatException parseException) {
+            log.error(parseException);
             model.addAttribute("error", "You entered wrong ID " + parseException);
             return "400";
         } catch (EntityExistsException emptyEntity) {
+            log.error(emptyEntity);
             model.addAttribute("error", emptyEntity + " It seems there's no user with ID: " + userId);
             return "404";
         } catch (Exception otherExc) {
+            log.error(otherExc);
             model.addAttribute("error", otherExc);
             return "500";
         }
@@ -80,12 +89,15 @@ public class UserController {
             Long userId = (Long) session.getAttribute("userId");
             userService.deleteUser(userId, session);
         } catch (NumberFormatException parseException) {
+            log.error(parseException);
             model.addAttribute("error", parseException);
             return "400";
         } catch (EntityExistsException emptyEntity) {
+            log.error(emptyEntity);
             model.addAttribute("error", emptyEntity + " It seems user doesn't exist");
             return "404";
         } catch (Exception otherExc) {
+            log.error(otherExc);
             model.addAttribute("error", otherExc);
             return "500";
         }
@@ -109,8 +121,10 @@ public class UserController {
             session.setAttribute("birthDate", user.getBirthDate());
             session.setAttribute("userPosts", user.getPosts());
         } catch (BadRequestException badRequest) {
+            log.error(badRequest);
             return new ResponseEntity<>(badRequest.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception otherExc) {
+            log.error(otherExc);
             return new ResponseEntity<>(otherExc.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(user.getId(), HttpStatus.OK);
@@ -122,6 +136,7 @@ public class UserController {
         try {
             model.addAttribute("user", userService.getAllUsers());
         } catch (Exception otherExc) {
+            log.error(otherExc);
             model.addAttribute("error", otherExc);
         }
         return "user/all-users";
@@ -131,12 +146,14 @@ public class UserController {
     public String getUserFriends(Model model, HttpSession session) {
         if (session.getAttribute("loginStatus") == null) {
             model.addAttribute("error", "You have to login first");
+            log.error("You have to login first");
             return "401";
         }
         try {
             long userId = (long) session.getAttribute("userId");
             model.addAttribute("user", userService.getUserFriends(userId));
         } catch (Exception otherExc) {
+            log.error(otherExc);
             model.addAttribute("error", otherExc);
         }
         return "user/user-friends";
@@ -152,6 +169,7 @@ public class UserController {
             session.removeAttribute("birthDate");
             session.removeAttribute("userPosts");
         } catch (Exception otherExc) {
+            log.error(otherExc);
             model.addAttribute("error", otherExc.getMessage());
         }
         return "home";
@@ -165,9 +183,11 @@ public class UserController {
             String userId = String.valueOf(session.getAttribute("userId"));
             model.addAttribute("user", userService.getIncomeRequests(userId, session));
         } catch (UnauthorizedException unauthorized) {
+            log.error(unauthorized);
             model.addAttribute("error", unauthorized);
             return "401";
         } catch (Exception otherExc) {
+            log.error(otherExc);
             model.addAttribute("error", otherExc.getMessage());
         }
         return "user/user-friends";
@@ -181,9 +201,11 @@ public class UserController {
             List<User> usersList = userService.getOutcomeRequests(userId, session);
             model.addAttribute("user", usersList);
         } catch (UnauthorizedException unauthorized) {
+            log.error(unauthorized);
             model.addAttribute("error", unauthorized.getMessage());
             return "401";
         } catch (Exception otherExc) {
+            log.error(otherExc);
             model.addAttribute("error", otherExc.getMessage());
         }
         return "user/user-friends";
