@@ -86,7 +86,6 @@ public class Post extends IdEntity {
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "USER_PAGE_POSTED")
-    @JsonBackReference
     public User getUserPagePosted() {
         return userPagePosted;
     }

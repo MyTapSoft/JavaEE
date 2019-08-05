@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityExistsException;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Service
@@ -60,7 +61,8 @@ public class PostService {
         return dao.getAllPosts();
     }
 
-    public List<Post> getFeed(long userId, short offset) {
+    public List<Post> getFeed(long userId, short offset, HttpSession session) {
+
 
         return dao.getFeed(userId, offset);
     }

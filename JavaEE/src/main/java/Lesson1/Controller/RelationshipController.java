@@ -4,7 +4,6 @@ import Lesson1.Exceptions.BadRequestException;
 import Lesson1.Exceptions.UnauthorizedException;
 import Lesson1.Model.RelationshipStatus;
 import Lesson1.Service.RelationshipService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +17,6 @@ import javax.servlet.http.HttpSession;
 @Controller
 public class RelationshipController {
     private final RelationshipService service;
-    private final static Logger log = Logger.getLogger(RelationshipService.class);
 
 
     @Autowired
@@ -27,45 +25,21 @@ public class RelationshipController {
     }
 
     @RequestMapping(path = "/addRelationship", method = RequestMethod.POST)
-    public ResponseEntity<String> addRelationship(@RequestParam String userIdTo, HttpSession session) {
-
-        try {
-            isUserLogin(session);
-            String userIdFrom = String.valueOf(session.getAttribute("userId"));
-            service.addRelationship(userIdFrom, userIdTo);
-        } catch (BadRequestException badRequest) {
-            log.error(badRequest);
-            return new ResponseEntity<>(badRequest.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (UnauthorizedException unauthorized) {
-            log.error(unauthorized);
-            return new ResponseEntity<>(unauthorized.getMessage(), HttpStatus.UNAUTHORIZED);
-
-        } catch (Exception otherError) {
-            log.error(otherError);
-            return new ResponseEntity<>(otherError.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
+    public ResponseEntity<String> addRelationship(@RequestParam String userIdTo, HttpSession session) throws UnauthorizedException, BadRequestException {
+        isUserLogin(session);
+        String userIdFrom = String.valueOf(session.getAttribute("userId"));
+        service.addRelationship(userIdFrom, userIdTo);
         return new ResponseEntity<>("Request Send", HttpStatus.OK);
     }
 
     @RequestMapping(path = "/updateRelationship", method = RequestMethod.PUT)
     public ResponseEntity<String> updateRelationship(HttpSession session,
                                                      @RequestParam(value = "userIdTo") String userIdTo,
-                                                     @RequestParam(value = "certainChainStatus") String status) {
-        try {
-            isUserLogin(session);
-            String userIdFrom = String.valueOf(session.getAttribute("userId"));
-            service.updateRelationship(userIdFrom, userIdTo, RelationshipStatus.valueOf(status));
-        } catch (BadRequestException badRequest) {
-            log.error(badRequest);
-            return new ResponseEntity<>(badRequest.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (UnauthorizedException unauthorized) {
-            log.error(unauthorized);
-            return new ResponseEntity<>(unauthorized.getMessage(), HttpStatus.UNAUTHORIZED);
-        } catch (Exception otherError) {
-            log.error(otherError);
-            return new ResponseEntity<>(otherError.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+                                                     @RequestParam(value = "certainChainStatus") String status) throws UnauthorizedException, BadRequestException {
+        isUserLogin(session);
+        String userIdFrom = String.valueOf(session.getAttribute("userId"));
+        service.updateRelationship(userIdFrom, userIdTo, RelationshipStatus.valueOf(status));
+
         return new ResponseEntity<>("Request Send", HttpStatus.OK);
 
     }

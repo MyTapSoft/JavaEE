@@ -1,5 +1,6 @@
 package Lesson1.DAO;
 
+import Lesson1.Model.Post;
 import Lesson1.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -65,6 +66,11 @@ public class UserDAO {
     }
 
     public User getUser(long id) {
+        List<Post> list = dao.getEntity(id, User.class).getPosts();
+        System.out.println("List size is: " + list.size());
+        for (Post post : list) {
+            System.out.println(post);
+        }
         return dao.getEntity(id, User.class);
     }
 
@@ -116,6 +122,5 @@ public class UserDAO {
                 .setParameter("status", "pending")
                 .getResultList();
     }
-
 
 }
