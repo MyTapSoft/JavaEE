@@ -2,9 +2,11 @@ package Lesson1.Controller;
 
 
 import Lesson1.Exceptions.BadRequestException;
+import Lesson1.Exceptions.ResponseStatusHandler;
 import Lesson1.Exceptions.UnauthorizedException;
 import Lesson1.Model.Post;
 import Lesson1.Service.PostService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,7 @@ import javax.servlet.http.HttpSession;
 public class PostController {
 
     private final PostService postService;
+    private final static Logger log = Logger.getLogger(ResponseStatusHandler.class);
 
 
     @Autowired
@@ -30,17 +33,24 @@ public class PostController {
 
     @RequestMapping(method = RequestMethod.POST, path = "/savePost")
     public ResponseEntity<Object> savePost(@ModelAttribute Post post) throws BadRequestException {
-        return new ResponseEntity<>(postService.save(post), HttpStatus.OK);
+        Post result = postService.save(post);
+        log.info("New post added successfully. Post ID: " + result.getId() + ". User ID: " + result.getUserPosted().getId());
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.PUT, path = "/updatePost")
     public ResponseEntity<Object> updatePost(@ModelAttribute Post post) throws BadRequestException {
-        return new ResponseEntity<>(postService.update(post), HttpStatus.OK);
+        Post result = postService.update(post);
+        log.info("Post updated successfully. Post ID: " + result.getId() + ". User ID: " + result.getUserPosted().getId());
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.DELETE, path = "/deletePost")
     public ResponseEntity<Object> deletePost(String postId) throws BadRequestException {
         postService.delete(Long.parseLong(postId));
+        log.info("Post deleted successfully. Post ID: " + postId);
+
         return new ResponseEntity<>("Post with ID" + postId + " has been deleted", HttpStatus.OK);
 
     }
@@ -78,6 +88,5 @@ public class PostController {
         model.addAttribute("posts", postService.getFeed(userId, offsets, session));
         return "posts/feed";
     }
-
 
 }

@@ -69,8 +69,6 @@ public class RelationshipDAO {
                 .setParameter("idOne", userOne)
                 .setParameter("idTwo", userTwo)
                 .executeUpdate();
-
-
     }
 
     public long getFriendsAmount(long userId) {
@@ -88,11 +86,16 @@ public class RelationshipDAO {
     }
 
     public Date getFriendRequestDate(long userIdFrom, long userIdTo) {
-        Relationship result = (Relationship) entityManager.createNativeQuery(GET_RELATIONSHIP_BY_IDs_AND_STATUS, Relationship.class)
-                .setParameter("idOne", userIdFrom)
-                .setParameter("idTwo", userIdTo)
-                .setParameter("status", "accepted")
-                .getSingleResult();
-        return result.getFriendsRequestDate();
+        try {
+            Relationship result = (Relationship) entityManager.createNativeQuery(GET_RELATIONSHIP_BY_IDs_AND_STATUS, Relationship.class)
+                    .setParameter("idOne", userIdFrom)
+                    .setParameter("idTwo", userIdTo)
+                    .setParameter("status", "accepted")
+                    .getSingleResult();
+            return result.getFriendsRequestDate();
+        } catch (NoResultException noResult) {
+            return null;
+        }
+
     }
 }

@@ -6,9 +6,10 @@ import Lesson1.Exceptions.BadRequestException;
 import Lesson1.Exceptions.UnauthorizedException;
 import Lesson1.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
-import javax.persistence.EntityExistsException;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
@@ -22,16 +23,19 @@ public class UserService {
         this.dao = dao;
     }
 
-    public User saveUser(User user) throws BadRequestException {
+    public User saveUser(User user) {
         if (dao.findUserDuplicate(user.getEmail(), user.getPhoneNumber()) != null) {
-            throw new BadRequestException("Email or Phone Number Already Exist");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email or Phone Number Already Exist");
         }
         return dao.saveUser(user);
     }
 
     public User updateUser(User user, HttpSession session) throws UnauthorizedException {
         isUserLogin(session);
-        return dao.updateUser(user);
+        User result = dao.updateUser(user);
+        if (result == null)
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "User With ID: " + user.getId() + " Doesn't Exist");
+        return result;
     }
 
     public void deleteUser(long userId, HttpSession session) throws UnauthorizedException {
@@ -39,9 +43,10 @@ public class UserService {
         dao.deleteUser(userId);
     }
 
-    public User getUser(long id) {
+    public User getUser(long id) throws BadRequestException {
         User result = dao.getUser(id);
-        if (result == null) throw new EntityExistsException();
+        if (result == null)
+            throw new BadRequestException("User with ID: " + id + " doesn't exist");
         return result;
     }
 
@@ -53,10 +58,9 @@ public class UserService {
         return dao.getUserFriends(userId);
     }
 
-    public User login(String login, String password) throws BadRequestException {
-        User user = dao.getUser(login, password);
-        if (user == null) throw new BadRequestException("Incorrect username or password");
-        return user;
+    public User login(String login, String password) {
+
+        return dao.getUser(login, password);
     }
 
     public List<User> getIncomeRequests(String userId, HttpSession session) throws UnauthorizedException {
@@ -74,5 +78,6 @@ public class UserService {
     private void isUserLogin(HttpSession session) throws UnauthorizedException {
         if (session.getAttribute("loginStatus") == null) throw new UnauthorizedException("You have to login first");
     }
+
 
 }

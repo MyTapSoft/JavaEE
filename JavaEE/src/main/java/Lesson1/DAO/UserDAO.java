@@ -1,6 +1,5 @@
 package Lesson1.DAO;
 
-import Lesson1.Model.Post;
 import Lesson1.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -53,7 +52,6 @@ public class UserDAO {
 
 
     public User saveUser(User user) {
-        System.out.println("DAO");
         return dao.save(user);
     }
 
@@ -66,25 +64,25 @@ public class UserDAO {
     }
 
     public User getUser(long id) {
-        List<Post> list = dao.getEntity(id, User.class).getPosts();
-        System.out.println("List size is: " + list.size());
-        for (Post post : list) {
-            System.out.println(post);
-        }
         return dao.getEntity(id, User.class);
     }
 
     public User getUser(String login, String password) {
-        return (User) entityManager.createNativeQuery(GET_USER, User.class)
-                .setParameter("login", login)
-                .setParameter("password", password)
-                .getSingleResult();
+        try {
+            return (User) entityManager.createNativeQuery(GET_USER, User.class)
+                    .setParameter("login", login)
+                    .setParameter("password", password)
+                    .getSingleResult();
+        } catch (NoResultException noResult) {
+            return null;
+        }
+
+
     }
 
     public List<User> getAllUsers() {
         return entityManager.createNamedQuery(GET_ALL_USERS, User.class)
                 .getResultList();
-
     }
 
     public List<User> getUserFriends(long userId) {
@@ -105,7 +103,6 @@ public class UserDAO {
         } catch (NoResultException empty) {
             return null;
         }
-
     }
 
 
@@ -121,6 +118,7 @@ public class UserDAO {
                 .setParameter("userId", userId)
                 .setParameter("status", "pending")
                 .getResultList();
+
     }
 
 }

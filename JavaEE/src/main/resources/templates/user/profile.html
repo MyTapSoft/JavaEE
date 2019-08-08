@@ -54,13 +54,14 @@
             type: "POST",
             url: "/addRelationship",
             data: {
-                userIdTo: $userId
+                userIdTo: $userId,
+                desiredStatus: "pending"
             },
-            success: function success() {
+            success: function success(data) {
                 alert("Your request has been send");
             },
             error: function error(data) {
-                alert(data.message);
+                alert("Error");
             }
         });
     });

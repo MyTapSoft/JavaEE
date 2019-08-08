@@ -23,23 +23,26 @@ public class RelationshipService {
     public Relationship addRelationship(String userIdFrom, String userIdTo) throws BadRequestException {
         long from = Long.parseLong(userIdFrom);
         long to = Long.parseLong(userIdTo);
+
         Relationship relationship = validate(RelationshipStatus.pending, userIdFrom, userIdTo);
 
         if (relationship != null && (relationship.getStatus() == RelationshipStatus.deleted || relationship.getStatus() == RelationshipStatus.canceled)) {
             return updateRelationship(userIdFrom, userIdTo, RelationshipStatus.pending);
         }
         if (relationship != null) throw new BadRequestException("Relationship Already Exist");
-        Relationship result = new Relationship();
-        result.setUserIdFrom(from);
-        result.setUserIdTo(to);
-        result.setStatus(RelationshipStatus.pending);
-        return dao.addRelationship(result);
+        relationship = new Relationship();
+        relationship.setUserIdFrom(from);
+        relationship.setUserIdTo(to);
+        relationship.setStatus(RelationshipStatus.pending);
+        relationship.setFriendsRequestDate(new Date());
+        return dao.addRelationship(relationship);
     }
 
     public Relationship updateRelationship(String userIdFrom, String userIdTo, RelationshipStatus status) throws BadRequestException {
         Relationship relationship = validate(status, userIdFrom, userIdTo);
         if (relationship == null) throw new BadRequestException("Relationship doesn't exist");
         relationship.setStatus(status);
+        relationship.setFriendsRequestDate(new Date());
         return dao.updateRelationship(relationship);
 
     }
@@ -60,7 +63,7 @@ public class RelationshipService {
         return dao.getFriendRequestDate(userIdFrom, userIdTo);
     }
 
-    private Relationship validate(RelationshipStatus status, String userIdOne, String userIdTwo) throws BadRequestException {
+    private Relationship validate(RelationshipStatus desiredStatus, String userIdOne, String userIdTwo) throws BadRequestException {
         long idOne = Long.parseLong(userIdOne);
         long idTwo = Long.parseLong(userIdTwo);
         if (idOne == idTwo) throw new BadRequestException("IDs Are Same");
@@ -68,9 +71,9 @@ public class RelationshipService {
         Relationship relationship = getRelationship(userIdOne, userIdTwo);
         if (relationship == null) return null;
 
+        if (relationship.getStatus() == desiredStatus) throw new BadRequestException("Status Already Established");
 
         Chain chain, chain1, chain2, chain3, chain4, chain5, chain6, chain7;
-
         chain = new FriendsAmountChain(RelationshipStatus.accepted, getFriendsAmount(idOne));
         chain1 = chain.setNextChain(new RequestDateChain(RelationshipStatus.deleted, getFriendRequestDate(idOne, idTwo)));
         chain2 = chain1.setNextChain(new RequestAmountChain(RelationshipStatus.pending, getRequestAmount(idOne)));
@@ -79,7 +82,7 @@ public class RelationshipService {
         chain5 = chain4.setNextChain(new RelationshipStatusDeclineChain(RelationshipStatus.decline, relationship.getStatus()));
         chain6 = chain5.setNextChain(new RelationshipStatusDeleteChain(RelationshipStatus.deleted, relationship.getStatus()));
         chain7 = chain6.setNextChain(new RelationshipStatusPendingChain(RelationshipStatus.pending, relationship.getStatus()));
-        chain.validate(status);
+        chain.validate(desiredStatus);
         return relationship;
     }
 
