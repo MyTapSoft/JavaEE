@@ -3,6 +3,7 @@ package Lesson1.Service;
 import Lesson1.DAO.PostDAO;
 import Lesson1.DAO.RelationshipDAO;
 import Lesson1.Exceptions.BadRequestException;
+import Lesson1.Exceptions.NotFoundException;
 import Lesson1.Model.Post;
 import Lesson1.Model.Relationship;
 import Lesson1.Model.RelationshipStatus;
@@ -10,8 +11,6 @@ import Lesson1.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityExistsException;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Service
@@ -44,7 +43,7 @@ public class PostService {
 
     public Post getById(long id) {
         Post result = dao.getPost(id);
-        if (result == null) throw new EntityExistsException();
+        if (result == null) throw new NotFoundException("Post With ID: " + id + " Not Found");
         return result;
 
     }
@@ -61,9 +60,7 @@ public class PostService {
         return dao.getAllPosts();
     }
 
-    public List<Post> getFeed(long userId, short offset, HttpSession session) {
-
-
+    public List<Post> getFeed(long userId, short offset) {
         return dao.getFeed(userId, offset);
     }
 
@@ -77,7 +74,7 @@ public class PostService {
         User userPagePosted = post.getUserPagePosted();
         Relationship isFriends = relationshipDAO.getRelationship(userPosted.getId(), userPagePosted.getId());
         if (isFriends == null || isFriends.getStatus() != RelationshipStatus.accepted)
-            throw new BadRequestException("User's not a friend");
+            throw new BadRequestException("The User's Not Your Friend");
         if (post.getMessage().replaceAll("\\s+", "").isEmpty()) throw new BadRequestException("Message is empty");
     }
 }

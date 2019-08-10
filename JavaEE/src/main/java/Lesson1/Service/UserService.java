@@ -3,12 +3,12 @@ package Lesson1.Service;
 
 import Lesson1.DAO.UserDAO;
 import Lesson1.Exceptions.BadRequestException;
+import Lesson1.Exceptions.DuplicateException;
+import Lesson1.Exceptions.NotFoundException;
 import Lesson1.Exceptions.UnauthorizedException;
 import Lesson1.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -23,9 +23,10 @@ public class UserService {
         this.dao = dao;
     }
 
+
     public User saveUser(User user) {
         if (dao.findUserDuplicate(user.getEmail(), user.getPhoneNumber()) != null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email or Phone Number Already Exist");
+            throw new DuplicateException("Email or Phone Number Already Exist");
         }
         return dao.saveUser(user);
     }
@@ -34,7 +35,7 @@ public class UserService {
         isUserLogin(session);
         User result = dao.updateUser(user);
         if (result == null)
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "User With ID: " + user.getId() + " Doesn't Exist");
+            throw new NotFoundException("User With ID: " + user.getId() + " Doesn't Exist");
         return result;
     }
 

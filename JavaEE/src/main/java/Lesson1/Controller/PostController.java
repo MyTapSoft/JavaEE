@@ -85,7 +85,7 @@ public class PostController {
         if (session.getAttribute("loginStatus") == null) throw new UnauthorizedException("You have to login first");
         Long userId = (Long) session.getAttribute("userId");
         short offsets = Short.parseShort(offset);
-        model.addAttribute("posts", postService.getFeed(userId, offsets, session));
+        model.addAttribute("posts", postService.getFeed(userId, offsets));
         return "posts/feed";
     }
 

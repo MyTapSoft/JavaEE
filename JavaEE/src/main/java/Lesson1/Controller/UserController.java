@@ -2,6 +2,7 @@ package Lesson1.Controller;
 
 
 import Lesson1.Exceptions.BadRequestException;
+import Lesson1.Exceptions.NotFoundException;
 import Lesson1.Exceptions.ResponseStatusHandler;
 import Lesson1.Exceptions.UnauthorizedException;
 import Lesson1.Model.User;
@@ -13,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -26,10 +26,10 @@ public class UserController {
 
 
     @Autowired
+
     public UserController(UserService userService) {
         this.userService = userService;
     }
-
     @RequestMapping(path = "/registerUser", method = RequestMethod.POST)
     public ResponseEntity<String> registerUser(@ModelAttribute User user) {
         userService.saveUser(user);
@@ -77,14 +77,14 @@ public class UserController {
     @RequestMapping(method = RequestMethod.POST, path = "/login")
     public ResponseEntity<Object> loginUser(HttpSession session,
                                             @RequestParam(value = "username") String username,
-                                            @RequestParam(value = "password") String password) throws BadRequestException {
+                                            @RequestParam(value = "password") String password) {
 
         if (session.getAttribute("loginStatus") != null)
             return new ResponseEntity<>("User Already Logged in!", HttpStatus.BAD_REQUEST);
 
 
         User user = userService.login(username, password);
-        if (user == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong Login Or Password");
+        if (user == null) throw new NotFoundException("Wrong Login Or Password");
         session.setAttribute("loginStatus", "true");
         session.setAttribute("userId", user.getId());
         session.setAttribute("userName", user.getUserName());
@@ -95,9 +95,9 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/logout")
-    public String logoutUser(HttpSession session) {
+    public String logoutUser(HttpSession session) throws UnauthorizedException {
         if (session.getAttribute("loginStatus") == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User Already Logged Out");
+            throw new UnauthorizedException("User Already Logged Out");
         }
         session.removeAttribute("loginStatus");
         session.removeAttribute("userId");

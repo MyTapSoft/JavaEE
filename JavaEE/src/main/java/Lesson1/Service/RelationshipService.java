@@ -2,6 +2,8 @@ package Lesson1.Service;
 
 import Lesson1.DAO.RelationshipDAO;
 import Lesson1.Exceptions.BadRequestException;
+import Lesson1.Exceptions.DuplicateException;
+import Lesson1.Exceptions.NotFoundException;
 import Lesson1.Model.Relationship;
 import Lesson1.Model.RelationshipStatus;
 import Lesson1.Service.Validator.*;
@@ -29,7 +31,7 @@ public class RelationshipService {
         if (relationship != null && (relationship.getStatus() == RelationshipStatus.deleted || relationship.getStatus() == RelationshipStatus.canceled)) {
             return updateRelationship(userIdFrom, userIdTo, RelationshipStatus.pending);
         }
-        if (relationship != null) throw new BadRequestException("Relationship Already Exist");
+        if (relationship != null) throw new DuplicateException("Relationship Already Exist");
         relationship = new Relationship();
         relationship.setUserIdFrom(from);
         relationship.setUserIdTo(to);
@@ -40,7 +42,7 @@ public class RelationshipService {
 
     public Relationship updateRelationship(String userIdFrom, String userIdTo, RelationshipStatus status) throws BadRequestException {
         Relationship relationship = validate(status, userIdFrom, userIdTo);
-        if (relationship == null) throw new BadRequestException("Relationship doesn't exist");
+        if (relationship == null) throw new NotFoundException("Relationship doesn't exist");
         relationship.setStatus(status);
         relationship.setFriendsRequestDate(new Date());
         return dao.updateRelationship(relationship);
@@ -71,7 +73,7 @@ public class RelationshipService {
         Relationship relationship = getRelationship(userIdOne, userIdTwo);
         if (relationship == null) return null;
 
-        if (relationship.getStatus() == desiredStatus) throw new BadRequestException("Status Already Established");
+        if (relationship.getStatus() == desiredStatus) throw new DuplicateException("Status Already Established");
 
         Chain chain, chain1, chain2, chain3, chain4, chain5, chain6, chain7;
         chain = new FriendsAmountChain(RelationshipStatus.accepted, getFriendsAmount(idOne));
