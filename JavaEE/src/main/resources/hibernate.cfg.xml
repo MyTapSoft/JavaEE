@@ -11,8 +11,8 @@
         <property name="hibernate.connection.username">root</property>
         <property name="hibernate.connection.password">260258aaa</property>
         <property name="hibernate.dialect = org.hibernate.dialect.OracleDialect"/>
-        <mapping class="Lesson1.Model.Post"/>
-        <mapping class="Lesson1.Model.User"/>
-        <mapping class="Lesson1.Model.Relationship"/>
+        <mapping class="Lesson1.model.Post"/>
+        <mapping class="Lesson1.model.User"/>
+        <mapping class="Lesson1.model.Relationship"/>
     </session-factory>
 </hibernate-configuration>
