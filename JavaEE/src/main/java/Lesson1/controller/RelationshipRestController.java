@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpSession;
 
 @Controller
-public class RelationshipController {
+public class RelationshipRestController {
     private final RelationshipService service;
     private final static Logger log = Logger.getLogger(ControllerAdviceExceptionHandler.class);
 
 
     @Autowired
-    public RelationshipController(RelationshipService service) {
+    public RelationshipRestController(RelationshipService service) {
         this.service = service;
     }
 

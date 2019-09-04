@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "USERS")
@@ -17,7 +15,7 @@ public class User implements IdEntity {
     private String email;
     private String phoneNumber;
     private Date birthDate;
-    private List<Post> posts = new ArrayList<>();
+    private Set<Post> posts = new HashSet<>();
     private String password;
 
 
@@ -81,11 +79,11 @@ public class User implements IdEntity {
 
     @OneToMany(targetEntity = Post.class, mappedBy = "userPosted", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference
-    public List<Post> getPosts() {
+    public Set<Post> getPosts() {
         return posts;
     }
 
-    public void setPosts(List<Post> posts) {
+    public void setPosts(Set<Post> posts) {
         this.posts = posts;
     }
 
@@ -110,5 +108,21 @@ public class User implements IdEntity {
                 ", posts=" + posts +
                 ", password='" + password + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) &&
+                Objects.equals(email, user.email) &&
+                Objects.equals(phoneNumber, user.phoneNumber) &&
+                Objects.equals(birthDate, user.birthDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email, phoneNumber, birthDate);
     }
 }
